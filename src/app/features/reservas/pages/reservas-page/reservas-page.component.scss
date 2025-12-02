@@ -1,0 +1,273 @@
+.reservas-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .subtitle {
+    color: #64748b;
+    font-size: 1rem;
+  }
+}
+
+.wizard-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 2rem;
+  margin-bottom: 3rem;
+  min-height: 500px;
+}
+
+.step-content {
+  padding: 1rem 0;
+  
+  &.date-step {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.calendar-wrapper {
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    
+    h3 {
+      margin: 0 0 0 1rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h3 {
+    margin: 0 0 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}
+
+.courts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.court-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+  }
+
+  &.selected {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+
+  .court-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .court-icon {
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    
+    mat-icon {
+      color: #3b82f6;
+    }
+  }
+
+  .court-details {
+    h4 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .court-meta {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .badge {
+        background: #e2e8f0;
+        padding: 0.125rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #475569;
+      }
+
+      .features {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  .time-slots {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    animation: slideDown 0.3s ease-out;
+
+    h5 {
+      margin: 0 0 1rem 0;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+
+      button {
+        &.active {
+          background: #3b82f6;
+          color: white;
+          border-color: #3b82f6;
+        }
+      }
+    }
+    
+    .step-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.details-step {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.booking-summary {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 2rem;
+  border: 1px solid #e2e8f0;
+
+  .summary-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #475569;
+    
+    mat-icon {
+      color: #3b82f6;
+    }
+    
+    span {
+      font-weight: 500;
+    }
+  }
+}
+
+.booking-form {
+  .form-row {
+    margin-bottom: 1rem;
+    
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+}
+
+.table-container {
+  margin-top: 3rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Override Material Stepper styles for cleaner look
+::ng-deep {
+  .mat-step-header {
+    border-radius: 8px;
+    
+    &:hover {
+      background: #f8fafc;
+    }
+    
+    &.cdk-keyboard-focused, &.cdk-program-focused {
+      background: #f1f5f9;
+    }
+  }
+}

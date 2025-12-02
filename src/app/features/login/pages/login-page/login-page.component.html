@@ -1,0 +1,61 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-content>
+      <h1 class="login-title">Login</h1>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input 
+            matInput 
+            type="email" 
+            formControlName="email"
+            placeholder="Enter your email"
+          >
+          @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
+            <mat-error>Email is required</mat-error>
+          }
+          @if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
+            <mat-error>Please enter a valid email</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            type="password" 
+            formControlName="password"
+            placeholder="Enter your password"
+          >
+          @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+            <mat-error>Password is required</mat-error>
+          }
+          @if (loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched) {
+            <mat-error>Password must be at least 6 characters</mat-error>
+          }
+        </mat-form-field>
+
+        @if (errorMessage) {
+          <div class="error-message">{{ errorMessage }}</div>
+        }
+
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit" 
+          class="submit-button"
+          [disabled]="isLoading"
+        >
+          {{ isLoading ? 'Loading...' : 'Accept' }}
+        </button>
+      </form>
+
+      <div class="links-container">
+        <a routerLink="/login/register" class="auth-link">Register</a>
+        <a routerLink="/login/forgot-password" class="auth-link">Forgot your password?</a>
+        <a routerLink="/login/reset-password" class="auth-link">Reset Password</a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

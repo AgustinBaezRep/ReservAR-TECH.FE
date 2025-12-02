@@ -1,0 +1,28 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h2>ReservAR-TECH</h2>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <nav class="sidebar-nav">
+    <mat-nav-list>
+      <a 
+        mat-list-item 
+        *ngFor="let item of menuItems"
+        [routerLink]="item.route"
+        routerLinkActive="active">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+  </nav>
+
+  <div class="sidebar-footer">
+    <mat-divider></mat-divider>
+    <a mat-list-item routerLink="/login">
+      <mat-icon matListItemIcon>logout</mat-icon>
+      <span matListItemTitle>Cerrar Sesión</span>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Editar Reserva</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="edit-form">
+    <p><strong>Cancha:</strong> {{ data.reservation.courtName }}</p>
+    <p><strong>Fecha:</strong> {{ data.reservation.date | date }}</p>
+    <p><strong>Hora:</strong> {{ data.reservation.startTime }}</p>
+    <p><strong>Precio:</strong> {{ data.reservation.price | currency }}</p>
+    <p><strong>Usuario:</strong> {{ data.reservation.userName }}</p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email de Contacto</mat-label>
+      <input matInput formControlName="userContact" placeholder="ejemplo@email.com">
+      <mat-error *ngIf="form.get('userContact')?.hasError('required')">
+        El email es requerido
+      </mat-error>
+      <mat-error *ngIf="form.get('userContact')?.hasError('email')">
+        Ingrese un email válido
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">Guardar</button>
+</mat-dialog-actions>
