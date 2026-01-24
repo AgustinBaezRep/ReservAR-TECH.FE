@@ -1,0 +1,84 @@
+.details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card-content {
+  padding-top: 16px;
+}
+
+.details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  &.two-col {
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.form-actions {
+  margin-top: 16px;
+}
+
+// Operating Hours Styles
+.hours-header {
+  display: grid;
+  grid-template-columns: 2fr 2fr 4fr 4fr;
+  gap: 16px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #666;
+  padding: 0 8px;
+}
+
+.hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.day-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 4fr 4fr;
+  gap: 16px;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.col-day {
+  text-transform: capitalize;
+}
+
+.col-open {
+  display: flex;
+  justify-content: center;
+}
+
+.time-input {
+  margin-bottom: -1.25em; // Reduce bottom spacing of mat-form-field
+}
+
+// Services Styles
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -20,6 +20,8 @@ import { CourtsService } from '../../services/courts.service';
 import { ReservationsService } from '../../services/reservations.service';
 import { ReservationStatus } from '../../models/reservation-status.enum';
 
+import { ComplejosService } from '../../../complejos/services/complejos.service';
+
 @Component({
   selector: 'app-reservas-page',
   imports: [
@@ -64,6 +66,7 @@ export class ReservasPageComponent implements OnInit {
     private fb: FormBuilder,
     private courtsService: CourtsService,
     private reservationsService: ReservationsService,
+    private complejosService: ComplejosService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {
@@ -84,26 +87,45 @@ export class ReservasPageComponent implements OnInit {
     // Reload reservations when date changes to check availability
     this.selectedDateControl.valueChanges.subscribe(() => {
       this.loadDayReservations();
+      this.generateTimeSlots();
       this.selectedCourt = null;
       this.selectedTimeSlot = null;
     });
   }
 
   private generateTimeSlots(): void {
-    const startHour = 8;
-    const endHour = 23;
-    
-    for (let hour = startHour; hour <= endHour; hour++) {
-      this.timeSlots.push({
-        hour,
-        label: `${hour.toString().padStart(2, '0')}:00`
-      });
+    this.timeSlots = [];
+    const selectedDate = this.selectedDateControl.value || new Date();
+    // getDay() returns 0 for Sunday, 1 for Monday, etc.
+    // Our array is 0-indexed starting from Monday (0=Mon, 6=Sun)
+    let dayIndex = selectedDate.getDay() - 1;
+    if (dayIndex === -1) dayIndex = 6; // Sunday
+
+    const operatingHours = this.complejosService.currentData.operatingHours.days[dayIndex];
+
+    if (operatingHours && operatingHours.isOpen && operatingHours.openTime && operatingHours.closeTime) {
+      const [startHour, startMinute] = operatingHours.openTime.split(':').map(Number);
+      const [endHour, endMinute] = operatingHours.closeTime.split(':').map(Number);
+      
+      let currentHour = startHour;
+      
+      // Generate slots from startHour to endHour - 1 (assuming 1 hour slots)
+      // If closeTime is 23:00, last slot is 22:00-23:00
+      while (currentHour < endHour) {
+        this.timeSlots.push({
+          hour: currentHour,
+          label: `${currentHour.toString().padStart(2, '0')}:00`
+        });
+        currentHour++;
+      }
     }
   }
 
   private loadCourts(): void {
-    this.courtsService.getCourts().subscribe(courts => {
-      this.courts = courts;
+    // Subscribe to complexData to get active courts
+    this.complejosService.complexData$.subscribe(data => {
+      // Filter only active courts
+      this.courts = data.courts.filter(c => c.isActive);
     });
   }
 

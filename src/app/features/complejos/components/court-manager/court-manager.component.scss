@@ -1,0 +1,129 @@
+.court-manager-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.create-court-card {
+  .card-content {
+    padding-top: 16px;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  &.two-col {
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.attributes-section {
+  margin-bottom: 24px;
+  
+  .attributes-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #666;
+  }
+
+  .checkbox-group {
+    display: flex;
+    gap: 24px;
+  }
+}
+
+.form-actions {
+  button {
+    width: 100%;
+    padding: 8px;
+  }
+}
+
+.court-list-section {
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+}
+
+.court-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.court-item {
+  mat-panel-description {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .court-type {
+      margin-right: auto;
+      margin-left: 16px;
+      color: #666;
+    }
+
+    .court-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &.active {
+    color: #10b981;
+    background-color: rgba(16, 185, 129, 0.1);
+  }
+
+  &.inactive {
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+}
+
+.court-details {
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .detail-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .panel-actions {
+    margin-top: 16px;
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.no-courts {
+  text-align: center;
+  padding: 48px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  color: #6b7280;
+}

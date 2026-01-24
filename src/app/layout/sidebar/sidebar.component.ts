@@ -27,8 +27,8 @@ interface MenuItem {
 export class SidebarComponent {
   menuItems: MenuItem[] = [
     { label: 'Reservas', icon: 'event', route: '/reservas', active: true },
-    { label: 'Canchas', icon: 'sports_soccer', route: '/canchas', active: false },
+    { label: 'Complejos', icon: 'stadium', route: '/complejos', active: false },
     { label: 'Usuarios', icon: 'people', route: '/usuarios', active: false },
-    { label: 'Configuración', icon: 'settings', route: '/configuracion', active: false }
+    { label: 'Caja', icon: 'receipt', route: '/caja', active: false },
   ];
 }

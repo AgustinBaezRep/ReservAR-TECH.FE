@@ -1,0 +1,32 @@
+.court-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.attributes-section {
+  margin-top: 8px;
+  
+  .attributes-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #666;
+  }
+
+  .checkbox-group {
+    display: flex;
+    gap: 24px;
+  }
+}

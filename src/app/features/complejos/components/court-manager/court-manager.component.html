@@ -1,0 +1,109 @@
+<div class="court-manager-container">
+  <!-- Create New Court Form -->
+  <mat-card class="create-court-card">
+    <mat-card-header>
+      <mat-card-title>Create New Court</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="card-content">
+      <form [formGroup]="courtForm" (ngSubmit)="createCourt()">
+        <div class="form-row two-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Court Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter court name">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Sport</mat-label>
+            <mat-select formControlName="type">
+              <mat-option *ngFor="let sport of sportTypes" [value]="sport">
+                {{sport}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row two-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Floor Type</mat-label>
+            <mat-select formControlName="floorType">
+              <mat-option *ngFor="let floor of floorTypes" [value]="floor">
+                {{floor}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Price per Hour</mat-label>
+            <input matInput type="number" formControlName="price" placeholder="0.00">
+            <span matTextPrefix>$&nbsp;</span>
+          </mat-form-field>
+        </div>
+
+        <div class="attributes-section">
+          <span class="attributes-label">Attributes:</span>
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="hasRoof">Roof</mat-checkbox>
+            <mat-checkbox formControlName="hasLighting">Lighting</mat-checkbox>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!courtForm.valid">
+            Create Court
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Court List -->
+  <div class="court-list-section">
+    <h3>Court List</h3>
+    
+    <div class="court-list">
+      <mat-expansion-panel *ngFor="let court of courts" class="court-item">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{court.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+            <span class="court-type">{{court.type}}</span>
+            <div class="court-actions">
+              <span class="status-badge" [class.active]="court.isActive" [class.inactive]="!court.isActive">
+                {{court.isActive ? 'Active' : 'Inactive'}}
+              </span>
+              <button mat-button (click)="toggleCourtStatus(court, $event)">
+                {{court.isActive ? 'Deactivate' : 'Activate'}}
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteCourt(court, $event)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="court-details">
+          <div class="detail-row">
+            <strong>Price:</strong> ${{court.price}}
+          </div>
+          <div class="detail-row">
+            <strong>Sport:</strong> {{court.type}}
+          </div>
+          <!-- Add more details here if we extend the model -->
+          
+          <div class="panel-actions">
+            <button mat-stroked-button color="primary" (click)="editCourt(court, $event)">
+              Edit Court Details
+            </button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      @if (courts.length === 0) {
+        <div class="no-courts">
+          <p>No courts created yet.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/login/login.routes').then(m => m.LOGIN_ROUTES)
   },
   {
+    path: 'complejos',
+    loadChildren: () => import('./features/complejos/complejos.routes').then(m => m.COMPLEJOS_ROUTES)
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
