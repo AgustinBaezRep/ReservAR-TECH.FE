@@ -47,9 +47,9 @@ const INITIAL_STATE: ComplexData = {
   },
   operatingHours: {
     days: Array(7).fill({
-      isOpen: false,
-      openTime: '',
-      closeTime: ''
+      isOpen: true,
+      openTime: '10:00',
+      closeTime: '22:00'
     })
   },
   services: {
@@ -155,7 +155,7 @@ export class ComplejosService {
 
   updateCourt(updatedCourt: Court) {
     const current = this.complexDataSubject.value;
-    const updatedCourts = current.courts.map(c => 
+    const updatedCourts = current.courts.map(c =>
       c.id === updatedCourt.id ? updatedCourt : c
     );
     this.complexDataSubject.next({

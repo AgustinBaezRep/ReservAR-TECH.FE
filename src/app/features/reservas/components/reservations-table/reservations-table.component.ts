@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,11 +23,12 @@ import { ReservationStatus } from '../../models/reservation-status.enum';
   templateUrl: './reservations-table.component.html',
   styleUrl: './reservations-table.component.scss'
 })
-export class ReservationsTableComponent {
+export class ReservationsTableComponent implements AfterViewInit {
   @Input() set reservations(value: Reservation[]) {
     this.dataSource.data = value;
+    this.updatePageSizeOptions(value.length);
   }
-  
+
   @Output() editReservation = new EventEmitter<Reservation>();
   @Output() cancelReservation = new EventEmitter<Reservation>();
 
@@ -36,6 +37,19 @@ export class ReservationsTableComponent {
 
   displayedColumns: string[] = ['date', 'court', 'time', 'userName', 'userContact', 'status', 'price', 'actions'];
   dataSource = new MatTableDataSource<Reservation>([]);
+  pageSizeOptions: number[] = [5, 10, 25, 50];
+
+  private updatePageSizeOptions(totalRecords: number): void {
+    // Base options
+    const baseOptions = [5, 10, 25, 50];
+
+    // Only add "All" option if there are records and it's different from existing options
+    if (totalRecords > 0 && !baseOptions.includes(totalRecords)) {
+      this.pageSizeOptions = [...baseOptions, totalRecords];
+    } else {
+      this.pageSizeOptions = baseOptions;
+    }
+  }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;

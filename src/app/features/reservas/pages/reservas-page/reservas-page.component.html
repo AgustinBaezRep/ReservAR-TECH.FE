@@ -6,7 +6,7 @@
 
   <div class="wizard-container">
     <mat-stepper #stepper [linear]="true">
-      
+
       <mat-step [stepControl]="selectedDateControl" label="Date">
         <div class="step-content date-step">
           <div class="calendar-wrapper">
@@ -16,12 +16,8 @@
               </button>
               <h3>{{ selectedDateControl.value | date:'MMMM yyyy' }}</h3>
             </div>
-            <mat-calendar 
-              #picker 
-              [selected]="selectedDateControl.value"
-              [minDate]="minDate"
-              [maxDate]="maxDate"
-              (selectedChange)="selectedDateControl.setValue($event); stepper.next()">
+            <mat-calendar #picker [selected]="selectedDateControl.value" [minDate]="minDate" [maxDate]="maxDate"
+              (selectedChange)="onDateSelected($event)" (click)="onCalendarClick($event)">
             </mat-calendar>
           </div>
         </div>
@@ -37,7 +33,8 @@
           </div>
 
           <div class="courts-list">
-            <div class="court-card" *ngFor="let court of courts" [class.selected]="selectedCourt?.id === court.id" (click)="selectCourt(court)">
+            <div class="court-card" *ngFor="let court of courts" [class.selected]="selectedCourt?.id === court.id"
+              (click)="selectCourt(court)">
               <div class="court-info">
                 <div class="court-icon">
                   <mat-icon>sports_soccer</mat-icon>
@@ -54,16 +51,12 @@
                   </p>
                 </div>
               </div>
-              
+
               <div class="time-slots" *ngIf="selectedCourt?.id === court.id" (click)="$event.stopPropagation()">
                 <h5>Horarios Disponibles</h5>
                 <div class="slots-grid">
-                  <button 
-                    mat-stroked-button 
-                    *ngFor="let slot of timeSlots"
-                    [disabled]="!isSlotAvailable(court, slot)"
-                    [class.active]="selectedTimeSlot?.label === slot.label"
-                    (click)="selectTimeSlot(slot)">
+                  <button mat-stroked-button *ngFor="let slot of timeSlots" [disabled]="!isSlotAvailable(court, slot)"
+                    [class.active]="selectedTimeSlot?.label === slot.label" (click)="selectTimeSlot(slot)">
                     {{ slot.label }}
                   </button>
                 </div>
@@ -148,9 +141,7 @@
 
   <div class="table-container">
     <h2>Reservas Realizadas</h2>
-    <app-reservations-table
-      [reservations]="allReservations"
-      (editReservation)="onEditReservation($event)"
+    <app-reservations-table [reservations]="allReservations" (editReservation)="onEditReservation($event)"
       (cancelReservation)="onCancelReservation($event)">
     </app-reservations-table>
   </div>

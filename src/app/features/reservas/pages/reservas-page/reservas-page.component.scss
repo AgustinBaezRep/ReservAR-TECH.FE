@@ -32,7 +32,7 @@
 
 .step-content {
   padding: 1rem 0;
-  
+
   &.date-step {
     display: flex;
     justify-content: center;
@@ -51,7 +51,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
-    
+
     h3 {
       margin: 0 0 0 1rem;
       font-weight: 600;
@@ -109,8 +109,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
     mat-icon {
       color: #3b82f6;
     }
@@ -144,7 +144,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        
+
         mat-icon {
           font-size: 16px;
           width: 16px;
@@ -157,7 +157,7 @@
   .time-slots {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid rgba(0,0,0,0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
     animation: slideDown 0.3s ease-out;
 
     h5 {
@@ -180,7 +180,7 @@
         }
       }
     }
-    
+
     .step-actions {
       display: flex;
       justify-content: flex-end;
@@ -207,11 +207,11 @@
     align-items: center;
     gap: 0.5rem;
     color: #475569;
-    
+
     mat-icon {
       color: #3b82f6;
     }
-    
+
     span {
       font-weight: 500;
     }
@@ -221,7 +221,7 @@
 .booking-form {
   .form-row {
     margin-bottom: 1rem;
-    
+
     mat-form-field {
       width: 100%;
     }
@@ -251,6 +251,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -261,12 +262,13 @@
 ::ng-deep {
   .mat-step-header {
     border-radius: 8px;
-    
+
     &:hover {
       background: #f8fafc;
     }
-    
-    &.cdk-keyboard-focused, &.cdk-program-focused {
+
+    &.cdk-keyboard-focused,
+    &.cdk-program-focused {
       background: #f1f5f9;
     }
   }
