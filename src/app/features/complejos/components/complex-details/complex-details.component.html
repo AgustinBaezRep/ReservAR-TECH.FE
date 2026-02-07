@@ -36,7 +36,7 @@
         </mat-form-field>
 
         <mat-checkbox formControlName="isOnline">Complex is online</mat-checkbox>
-        
+
         <div class="form-actions">
           <button mat-raised-button color="primary" (click)="saveGeneralInfo()">Save Complex Information</button>
         </div>
@@ -57,7 +57,7 @@
           <div class="col-time">Opening Time</div>
           <div class="col-time">Closing Time</div>
         </div>
-        
+
         <div formArrayName="days" class="hours-list">
           <div *ngFor="let day of days.controls; let i = index" [formGroupName]="i" class="day-row">
             <div class="col-day capitalize">{{ getDayName(i) }}</div>
@@ -127,8 +127,8 @@
 
         <div class="form-actions">
           <button mat-raised-button color="primary" (click)="saveMercadoPago()">
-            <mat-icon>link</mat-icon>
-            Link Mercado Pago
+            <mat-icon>save</mat-icon>
+            Guardar
           </button>
         </div>
       </form>

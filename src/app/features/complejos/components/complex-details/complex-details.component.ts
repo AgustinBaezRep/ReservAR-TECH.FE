@@ -7,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ComplejosService, ComplexData } from '../../services/complejos.service';
@@ -22,7 +23,8 @@ import { ComplejosService, ComplexData } from '../../services/complejos.service'
     MatCheckboxModule,
     MatButtonModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatSnackBarModule
   ],
   templateUrl: './complex-details.component.html',
   styleUrls: ['./complex-details.component.scss']
@@ -38,7 +40,8 @@ export class ComplexDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private complejosService: ComplejosService
+    private complejosService: ComplejosService,
+    private snackBar: MatSnackBar
   ) {
     this.generalInfoForm = this.fb.group({
       name: ['', Validators.required],
@@ -134,6 +137,12 @@ export class ComplexDetailsComponent implements OnInit, OnDestroy {
   saveMercadoPago() {
     if (this.mercadoPagoForm.valid) {
       this.complejosService.updateMercadoPago(this.mercadoPagoForm.value);
+      this.snackBar.open('Credenciales de Mercado Pago guardadas correctamente', 'Cerrar', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['success-snackbar']
+      });
     }
   }
 }
