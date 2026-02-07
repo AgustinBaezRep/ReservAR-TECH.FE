@@ -218,8 +218,13 @@ export class ReservasPageComponent implements OnInit {
   // Table Actions
   onEditReservation(reservation: Reservation): void {
     const dialogRef = this.dialog.open(EditReservationDialogComponent, {
-      width: '400px',
-      data: { reservation }
+      width: '450px',
+      data: {
+        reservation,
+        allReservations: this.allReservations,
+        courts: this.courts,
+        operatingHours: this.complejosService.currentData.operatingHours
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
