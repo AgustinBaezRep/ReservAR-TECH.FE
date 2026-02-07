@@ -146,3 +146,11 @@
     </app-reservations-table>
   </div>
 </div>
+
+<!-- Custom Toast Container -->
+<div class="toast-container">
+  <div class="toast" *ngFor="let toast of toasts">
+    <span class="toast-message">{{ toast.message }}</span>
+    <button class="toast-action" (click)="onUndo(toast)">DESHACER</button>
+  </div>
+</div>

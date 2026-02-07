@@ -93,7 +93,7 @@ export class ReservationsService {
     const currentReservations = this.reservationsSubject.value;
     this.reservationsSubject.next([...currentReservations, newReservation]);
 
-    return of(newReservation).pipe(delay(300));
+    return of(newReservation).pipe(delay(1000));
   }
 
   updateReservation(id: string, updates: Partial<Reservation>): Observable<Reservation> {
@@ -114,7 +114,7 @@ export class ReservationsService {
     newReservations[index] = updatedReservation;
     this.reservationsSubject.next(newReservations);
 
-    return of(updatedReservation).pipe(delay(300));
+    return of(updatedReservation).pipe(delay(1000));
   }
 
   cancelReservation(id: string): Observable<void> {
@@ -133,6 +133,6 @@ export class ReservationsService {
     const currentReservations = this.reservationsSubject.value;
     const filtered = currentReservations.filter(r => r.id !== id);
     this.reservationsSubject.next(filtered);
-    return of(void 0).pipe(delay(300));
+    return of(void 0).pipe(delay(1000));
   }
 }
