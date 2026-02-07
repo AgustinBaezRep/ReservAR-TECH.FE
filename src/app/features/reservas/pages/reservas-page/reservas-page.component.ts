@@ -251,12 +251,23 @@ export class ReservasPageComponent implements OnInit {
   }
 
   private updateReservation(id: string, updates: Partial<Reservation>): void {
+    // Optimistic update: update local array immediately for instant UI feedback
+    const index = this.allReservations.findIndex(r => r.id === id);
+    if (index !== -1) {
+      this.allReservations = [
+        ...this.allReservations.slice(0, index),
+        { ...this.allReservations[index], ...updates },
+        ...this.allReservations.slice(index + 1)
+      ];
+    }
+
     this.reservationsService.updateReservation(id, updates).subscribe({
       next: () => {
         this.showMessage('Reserva actualizada exitosamente');
-        this.loadAllReservations();
       },
       error: (error) => {
+        // Revert on error - reload from service
+        this.loadAllReservations();
         this.showMessage('Error al actualizar la reserva', true);
       }
     });
