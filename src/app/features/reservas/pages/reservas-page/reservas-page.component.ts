@@ -273,37 +273,92 @@ export class ReservasPageComponent implements OnInit {
     });
   }
 
+  // Custom Toasts Logic
+  toasts: Toast[] = [];
+
   onCancelReservation(reservation: Reservation): void {
-    // Cancel directly without confirmation popup
-    this.reservationsService.cancelReservation(reservation.id).subscribe({
+    // Show confirmation dialog before cancelling
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirmar eliminación',
+        message: `¿Estás seguro de que deseas eliminar la reserva de ${reservation.userName} para el ${reservation.date} a las ${reservation.startTime}?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+
+      // Optimistic update: change status immediately for smooth CSS transition
+      const index = this.allReservations.findIndex(r => r.id === reservation.id);
+      if (index !== -1) {
+        this.allReservations = [
+          ...this.allReservations.slice(0, index),
+          { ...this.allReservations[index], status: ReservationStatus.Cancelled },
+          ...this.allReservations.slice(index + 1)
+        ];
+      }
+
+      this.reservationsService.cancelReservation(reservation.id).subscribe({
+        next: () => {
+          this.loadDayReservations(); // Refresh availability
+          this.showUndoToast(reservation);
+        },
+        error: () => {
+          // Revert on error
+          this.loadAllReservations();
+          this.showMessage('Error al cancelar la reserva', true);
+        }
+      });
+    });
+  }
+
+  showUndoToast(reservation: Reservation): void {
+    const toastId = Date.now() + Math.random();
+    const toast: Toast = {
+      id: toastId,
+      message: `Reserva de ${reservation.userName} eliminada`,
+      reservationId: reservation.id
+    };
+
+    // Auto-dismiss after 10 seconds
+    toast.timeoutId = setTimeout(() => {
+      this.removeToast(toastId);
+    }, 10000);
+
+    this.toasts.push(toast);
+  }
+
+  removeToast(id: number): void {
+    const index = this.toasts.findIndex(t => t.id === id);
+    if (index !== -1) {
+      clearTimeout(this.toasts[index].timeoutId);
+      this.toasts.splice(index, 1);
+    }
+  }
+
+  onUndo(toast: Toast): void {
+    this.removeToast(toast.id);
+
+    // Optimistic update: restore status immediately
+    const restoreIndex = this.allReservations.findIndex(r => r.id === toast.reservationId);
+    if (restoreIndex !== -1) {
+      this.allReservations = [
+        ...this.allReservations.slice(0, restoreIndex),
+        { ...this.allReservations[restoreIndex], status: ReservationStatus.Confirmed },
+        ...this.allReservations.slice(restoreIndex + 1)
+      ];
+    }
+
+    this.reservationsService.restoreReservation(toast.reservationId).subscribe({
       next: () => {
-        this.loadAllReservations();
-        this.loadDayReservations(); // Refresh availability
-
-        // Show snackbar with undo option (10 seconds)
-        const snackBarRef = this.snackBar.open('Reserva eliminada', 'DESHACER', {
-          duration: 10000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          panelClass: ['success-snackbar']
-        });
-
-        // Handle undo action
-        snackBarRef.onAction().subscribe(() => {
-          this.reservationsService.restoreReservation(reservation.id).subscribe({
-            next: () => {
-              this.loadAllReservations();
-              this.loadDayReservations();
-              this.showMessage('Reserva restaurada');
-            },
-            error: () => {
-              this.showMessage('Error al restaurar la reserva', true);
-            }
-          });
-        });
+        this.loadDayReservations();
+        this.showMessage('Reserva restaurada');
       },
       error: () => {
-        this.showMessage('Error al cancelar la reserva', true);
+        // Revert on error
+        this.loadAllReservations();
+        this.showMessage('Error al restaurar la reserva', true);
       }
     });
   }
@@ -320,4 +375,11 @@ export class ReservasPageComponent implements OnInit {
   goToToday(): void {
     this.selectedDateControl.setValue(new Date());
   }
+}
+
+interface Toast {
+  id: number;
+  message: string;
+  reservationId: string;
+  timeoutId?: any;
 }
