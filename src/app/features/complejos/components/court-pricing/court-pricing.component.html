@@ -1,0 +1,111 @@
+<mat-card class="pricing-card">
+    <mat-card-header>
+        <mat-card-title>Court Pricing</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="card-content">
+        <form [formGroup]="pricingForm">
+            <!-- Court Selection -->
+            <div class="form-section">
+                <label class="section-label">Select Court</label>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-select formControlName="courtId" placeholder="Select a court">
+                        <mat-option *ngFor="let court of courts" [value]="court.id">
+                            {{ court.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <!-- Single Price Toggle -->
+            <div class="form-section" *ngIf="selectedCourt">
+                <!-- RF-19: Warning when court has active reservations -->
+                <div class="reservation-warning" *ngIf="hasActiveReservations">
+                    <mat-icon color="warn">warning</mat-icon>
+                    <span>Esta cancha tiene {{ activeReservationsCount }} reserva(s) activa(s). No se puede modificar el
+                        precio.</span>
+                </div>
+
+                <mat-checkbox formControlName="isSinglePrice" [disabled]="hasActiveReservations">Single
+                    price</mat-checkbox>
+            </div>
+
+            <!-- Single Price Input (shown when isSinglePrice is true) -->
+            <div class="form-section" *ngIf="selectedCourt && isSinglePrice">
+                <label class="section-label">Single Price</label>
+                <mat-form-field appearance="outline" class="full-width">
+                    <input matInput type="number" formControlName="singlePrice" placeholder="Enter price">
+                </mat-form-field>
+            </div>
+
+            <!-- Price Intervals (shown when isSinglePrice is false) -->
+            <div class="form-section" *ngIf="selectedCourt && !isSinglePrice">
+                <label class="section-label">Price Intervals</label>
+
+                <!-- Add Interval Form -->
+                <div class="interval-form" [formGroup]="intervalForm">
+                    <mat-form-field appearance="outline" class="time-field">
+                        <input matInput type="time" formControlName="endTime" placeholder="End time">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="price-field">
+                        <input matInput type="number" formControlName="price" placeholder="Price">
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" type="button" (click)="addInterval()">
+                        Add Interval
+                    </button>
+                </div>
+
+                <!-- Intervals Table -->
+                <table mat-table [dataSource]="intervals.controls" class="intervals-table" *ngIf="intervals.length > 0">
+                    <ng-container matColumnDef="endTime">
+                        <th mat-header-cell *matHeaderCellDef>End Time</th>
+                        <td mat-cell *matCellDef="let interval">{{ interval.get('endTime').value }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="price">
+                        <th mat-header-cell *matHeaderCellDef>Price</th>
+                        <td mat-cell *matCellDef="let interval">${{ interval.get('price').value }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                        <td mat-cell *matCellDef="let interval; let i = index">
+                            <button mat-icon-button (click)="editInterval(i)" type="button">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="removeInterval(i)" type="button">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+
+            <!-- Deposit Section -->
+            <div class="form-section" *ngIf="selectedCourt">
+                <label class="section-label">Deposit</label>
+                <div class="deposit-row">
+                    <mat-form-field appearance="outline" class="deposit-field">
+                        <input matInput type="number" formControlName="deposit" placeholder="Enter deposit amount">
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" type="button" (click)="clearDeposit()">
+                        Clear Deposit
+                    </button>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="form-actions" *ngIf="selectedCourt">
+                <button mat-raised-button color="primary" class="save-button" type="button" (click)="savePricing()"
+                    [disabled]="hasActiveReservations">
+                    Save Pricing
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

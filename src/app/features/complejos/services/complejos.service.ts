@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 
-import { Court } from '../../reservas/models/reservation.model';
+import { Court, CourtPricing } from '../../reservas/models/reservation.model';
 
 export interface ComplexData {
   generalInfo: {
@@ -180,6 +180,21 @@ export class ComplejosService {
     const updatedCourts = current.courts.map(c => {
       if (c.id === courtId) {
         return { ...c, isActive: !c.isActive };
+      }
+      return c;
+    });
+    this.complexDataSubject.next({
+      ...current,
+      courts: updatedCourts
+    });
+    this.saveToApi();
+  }
+
+  updateCourtPricing(courtId: string, pricing: CourtPricing) {
+    const current = this.complexDataSubject.value;
+    const updatedCourts = current.courts.map(c => {
+      if (c.id === courtId) {
+        return { ...c, pricing };
       }
       return c;
     });

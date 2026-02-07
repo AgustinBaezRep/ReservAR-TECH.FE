@@ -4,13 +4,7 @@
     <!-- Date Picker -->
     <mat-form-field appearance="outline">
       <mat-label>Fecha</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker"
-        formControlName="date"
-        [min]="minDate"
-        [max]="maxDate"
-      />
+      <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate" [max]="maxDate" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
       <mat-error *ngIf="form.get('date')?.hasError('required')">
@@ -23,7 +17,7 @@
       <mat-label>Cancha</mat-label>
       <mat-select formControlName="courtId">
         <mat-option *ngFor="let court of availableCourts" [value]="court.id">
-          {{ court.name }} - {{ court.price | currency }}
+          {{ court.name }}
         </mat-option>
       </mat-select>
       <mat-error *ngIf="form.get('courtId')?.hasError('required')">
@@ -35,11 +29,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Horario</mat-label>
       <mat-select formControlName="startTime">
-        <mat-option
-          *ngFor="let slot of availableTimeSlots"
-          [value]="slot.label"
-          [disabled]="!slot.available"
-        >
+        <mat-option *ngFor="let slot of availableTimeSlots" [value]="slot.label" [disabled]="!slot.available">
           {{ slot.label }} {{ !slot.available ? "(No disponible)" : "" }}
         </mat-option>
       </mat-select>
@@ -56,11 +46,7 @@
     <!-- User Name -->
     <mat-form-field appearance="outline">
       <mat-label>Nombre del Usuario</mat-label>
-      <input
-        matInput
-        formControlName="userName"
-        placeholder="Ingrese el nombre"
-      />
+      <input matInput formControlName="userName" placeholder="Ingrese el nombre" />
       <mat-error *ngIf="form.get('userName')?.hasError('required')">
         El nombre es requerido
       </mat-error>
@@ -69,11 +55,7 @@
     <!-- Contact Email -->
     <mat-form-field appearance="outline">
       <mat-label>Email de Contacto</mat-label>
-      <input
-        matInput
-        formControlName="userContact"
-        placeholder="ejemplo@email.com"
-      />
+      <input matInput formControlName="userContact" placeholder="ejemplo@email.com" />
       <mat-error *ngIf="form.get('userContact')?.hasError('required')">
         El email es requerido
       </mat-error>
@@ -85,12 +67,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancelar</button>
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="onSave()"
-    [disabled]="form.invalid"
-  >
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">
     Guardar
   </button>
 </mat-dialog-actions>
