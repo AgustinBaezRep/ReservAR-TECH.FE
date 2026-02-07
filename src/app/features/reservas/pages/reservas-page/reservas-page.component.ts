@@ -55,7 +55,7 @@ export class ReservasPageComponent implements OnInit {
   selectedDateControl = new FormControl(new Date(), [Validators.required]);
   selectedCourt: Court | null = null;
   selectedTimeSlot: TimeSlot | null = null;
-  
+
   minDate: Date = new Date();
   maxDate: Date = new Date();
 
@@ -83,7 +83,7 @@ export class ReservasPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadCourts();
     this.loadAllReservations();
-    
+
     // Reload reservations when date changes to check availability
     this.selectedDateControl.valueChanges.subscribe(() => {
       this.loadDayReservations();
@@ -91,6 +91,22 @@ export class ReservasPageComponent implements OnInit {
       this.selectedCourt = null;
       this.selectedTimeSlot = null;
     });
+  }
+
+  onDateSelected(date: Date): void {
+    this.selectedDateControl.setValue(date);
+    this.stepper.next();
+  }
+
+  onCalendarClick(event: MouseEvent): void {
+    // Check if clicked on the already selected date cell (today has 'mat-calendar-body-active' class)
+    const target = event.target as HTMLElement;
+    const dateCell = target.closest('.mat-calendar-body-cell');
+
+    if (dateCell && dateCell.classList.contains('mat-calendar-body-active')) {
+      // Clicked on the already selected date (today), advance to next step
+      this.stepper.next();
+    }
   }
 
   private generateTimeSlots(): void {
@@ -106,9 +122,9 @@ export class ReservasPageComponent implements OnInit {
     if (operatingHours && operatingHours.isOpen && operatingHours.openTime && operatingHours.closeTime) {
       const [startHour, startMinute] = operatingHours.openTime.split(':').map(Number);
       const [endHour, endMinute] = operatingHours.closeTime.split(':').map(Number);
-      
+
       let currentHour = startHour;
-      
+
       // Generate slots from startHour to endHour - 1 (assuming 1 hour slots)
       // If closeTime is 23:00, last slot is 22:00-23:00
       while (currentHour < endHour) {
@@ -161,8 +177,8 @@ export class ReservasPageComponent implements OnInit {
     const dateStr = this.getSelectedDateString();
     // Check if there is any reservation for this court and time on the selected date
     // Note: In a real app, we'd check against this.reservations which is already filtered by date
-    return !this.reservations.some(r => 
-      r.courtId === court.id && 
+    return !this.reservations.some(r =>
+      r.courtId === court.id &&
       r.startTime === slot.label &&
       r.status !== ReservationStatus.Cancelled
     );
@@ -173,7 +189,7 @@ export class ReservasPageComponent implements OnInit {
     if (this.bookingForm.valid && this.selectedCourt && this.selectedTimeSlot) {
       const formValue = this.bookingForm.value;
       const startTime = this.selectedTimeSlot.label;
-      
+
       // Calculate end time (assuming 1 hour duration for now)
       const [hours, minutes] = startTime.split(':').map(Number);
       const endHour = hours + 1;
@@ -247,26 +263,36 @@ export class ReservasPageComponent implements OnInit {
   }
 
   onCancelReservation(reservation: Reservation): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'Confirmar eliminación',
-        message: `¿Está seguro que desea cancelar la reserva de ${reservation.userName}?`
-      }
-    });
+    // Cancel directly without confirmation popup
+    this.reservationsService.cancelReservation(reservation.id).subscribe({
+      next: () => {
+        this.loadAllReservations();
+        this.loadDayReservations(); // Refresh availability
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.reservationsService.cancelReservation(reservation.id).subscribe({
-          next: () => {
-            this.showMessage('Reserva cancelada exitosamente');
-            this.loadAllReservations();
-            this.loadDayReservations(); // Refresh availability
-          },
-          error: (error) => {
-            this.showMessage('Error al cancelar la reserva', true);
-          }
+        // Show snackbar with undo option (10 seconds)
+        const snackBarRef = this.snackBar.open('Reserva eliminada', 'DESHACER', {
+          duration: 10000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
         });
+
+        // Handle undo action
+        snackBarRef.onAction().subscribe(() => {
+          this.reservationsService.restoreReservation(reservation.id).subscribe({
+            next: () => {
+              this.loadAllReservations();
+              this.loadDayReservations();
+              this.showMessage('Reserva restaurada');
+            },
+            error: () => {
+              this.showMessage('Error al restaurar la reserva', true);
+            }
+          });
+        });
+      },
+      error: () => {
+        this.showMessage('Error al cancelar la reserva', true);
       }
     });
   }

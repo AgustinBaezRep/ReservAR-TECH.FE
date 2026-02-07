@@ -37,7 +37,7 @@ mat-form-field {
 // Operating Hours Styles
 .hours-header {
   display: grid;
-  grid-template-columns: 2fr 2fr 4fr 4fr;
+  grid-template-columns: 2fr 2fr 4fr 4fr 3fr;
   gap: 16px;
   margin-bottom: 8px;
   font-weight: 500;
@@ -53,10 +53,27 @@ mat-form-field {
 
 .day-row {
   display: grid;
-  grid-template-columns: 2fr 2fr 4fr 4fr;
+  grid-template-columns: 2fr 2fr 4fr 4fr 3fr;
   gap: 16px;
   align-items: center;
   padding: 0 8px;
+}
+
+.col-action {
+  display: flex;
+  justify-content: flex-start;
+
+  button {
+    font-size: 12px;
+    white-space: nowrap;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+    }
+  }
 }
 
 .col-day {

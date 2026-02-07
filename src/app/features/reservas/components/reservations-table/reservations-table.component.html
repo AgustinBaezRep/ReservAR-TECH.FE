@@ -1,6 +1,6 @@
 <div class="table-container">
   <h3 class="table-title">Reservas Creadas</h3>
-  
+
   <table mat-table [dataSource]="dataSource" matSort class="reservations-table">
     <!-- Date Column -->
     <ng-container matColumnDef="date">
@@ -54,19 +54,11 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let reservation">
-        <button 
-          mat-icon-button 
-          color="primary"
-          (click)="onEdit(reservation)"
-          [disabled]="!canEdit(reservation)"
+        <button mat-icon-button color="primary" (click)="onEdit(reservation)" [disabled]="!canEdit(reservation)"
           matTooltip="Editar">
           <mat-icon>edit</mat-icon>
         </button>
-        <button 
-          mat-icon-button 
-          color="warn"
-          (click)="onCancel(reservation)"
-          [disabled]="!canCancel(reservation)"
+        <button mat-icon-button color="warn" (click)="onCancel(reservation)" [disabled]="!canCancel(reservation)"
           matTooltip="Cancelar">
           <mat-icon>cancel</mat-icon>
         </button>
@@ -84,8 +76,6 @@
     </tr>
   </table>
 
-  <mat-paginator 
-    [pageSizeOptions]="[5, 10, 25, 50]"
-    showFirstLastButtons>
+  <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons>
   </mat-paginator>
 </div>

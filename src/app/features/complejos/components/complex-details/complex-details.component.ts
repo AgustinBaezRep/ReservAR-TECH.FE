@@ -74,7 +74,7 @@ export class ComplexDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initOperatingHours();
-    
+
     this.complejosService.complexData$
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
@@ -94,17 +94,26 @@ export class ComplexDetailsComponent implements OnInit, OnDestroy {
   initOperatingHours() {
     this.weekDays.forEach(() => {
       const dayGroup = this.fb.group({
-        isOpen: [false],
-        openTime: [''],
-        closeTime: ['']
+        isOpen: [true],
+        openTime: ['10:00'],
+        closeTime: ['22:00']
       });
       this.days.push(dayGroup);
     });
   }
 
+  replicateToAllDays() {
+    const mondayValues = this.days.at(0).value;
+    this.days.controls.forEach((control, index) => {
+      if (index !== 0) {
+        control.patchValue(mondayValues);
+      }
+    });
+  }
+
   updateForms(data: ComplexData) {
     this.generalInfoForm.patchValue(data.generalInfo, { emitEvent: false });
-    
+
     // Update operating hours
     if (data.operatingHours.days.length === 7) {
       this.days.controls.forEach((control, index) => {

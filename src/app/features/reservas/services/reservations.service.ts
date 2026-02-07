@@ -123,6 +123,12 @@ export class ReservationsService {
     );
   }
 
+  restoreReservation(id: string): Observable<void> {
+    return this.updateReservation(id, { status: ReservationStatus.Confirmed }).pipe(
+      map(() => void 0)
+    );
+  }
+
   deleteReservation(id: string): Observable<void> {
     const currentReservations = this.reservationsSubject.value;
     const filtered = currentReservations.filter(r => r.id !== id);

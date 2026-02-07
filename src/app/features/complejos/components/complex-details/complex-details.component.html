@@ -74,6 +74,12 @@
                 <input matInput type="time" formControlName="closeTime">
               </mat-form-field>
             </div>
+            <div class="col-action">
+              <button *ngIf="i === 0" mat-raised-button color="primary" (click)="replicateToAllDays()" type="button">
+                <mat-icon>content_copy</mat-icon>
+                Replicar al resto
+              </button>
+            </div>
           </div>
         </div>
 
