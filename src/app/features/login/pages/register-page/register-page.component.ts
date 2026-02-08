@@ -6,6 +6,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -17,7 +19,9 @@ import { AuthService } from '../../services/auth.service';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule
   ],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.scss'
@@ -26,6 +30,8 @@ export class RegisterPageComponent {
   registerForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  hidePassword = true;
+  hideConfirmPassword = true;
 
   constructor(
     private fb: FormBuilder,
@@ -59,23 +65,41 @@ export class RegisterPageComponent {
       this.errorMessage = '';
 
       this.authService.register(this.registerForm.value).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          if (response.success) {
-            console.log('Registration successful:', response);
-            this.router.navigate(['/login']);
-          } else {
-            this.errorMessage = response.message;
-          }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = 'An error occurred. Please try again.';
-          console.error('Registration error:', error);
-        }
+        next: (response) => this.handleAuthResponse(response),
+        error: (error) => this.handleError(error)
       });
     } else {
       this.registerForm.markAllAsTouched();
     }
+  }
+
+  onGoogleLogin(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.authService.loginWithGoogle().subscribe({
+      next: (response) => this.handleAuthResponse(response),
+      error: (error) => this.handleError(error)
+    });
+  }
+
+  private handleAuthResponse(response: any): void {
+    this.isLoading = false;
+    if (response.success) {
+      console.log('Registration/Login successful:', response);
+      // Determine redirection based on role or default
+      if (response.user && response.user.role === 'ADMIN') {
+        this.router.navigate(['/complejos']);
+      } else {
+        this.router.navigate(['/reservas']);
+      }
+    } else {
+      this.errorMessage = response.message;
+    }
+  }
+
+  private handleError(error: any): void {
+    this.isLoading = false;
+    this.errorMessage = 'An error occurred. Please try again.';
+    console.error('Registration/Login error:', error);
   }
 }

@@ -8,13 +8,5 @@ export const LOGIN_ROUTES: Routes = [
   {
     path: 'register',
     loadComponent: () => import('./pages/register-page/register-page.component').then(m => m.RegisterPageComponent)
-  },
-  {
-    path: 'forgot-password',
-    loadComponent: () => import('./pages/forgot-password-page/forgot-password-page.component').then(m => m.ForgotPasswordPageComponent)
-  },
-  {
-    path: 'reset-password',
-    loadComponent: () => import('./pages/reset-password-page/reset-password-page.component').then(m => m.ResetPasswordPageComponent)
   }
 ];
