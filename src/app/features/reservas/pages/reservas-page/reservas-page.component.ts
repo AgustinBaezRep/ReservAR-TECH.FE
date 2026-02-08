@@ -76,7 +76,7 @@ export class ReservasPageComponent implements OnInit {
       notes: ['']
     });
 
-    this.maxDate.setDate(this.minDate.getDate() + 6);
+    this.maxDate.setDate(this.minDate.getDate() + 14);
     this.generateTimeSlots();
   }
 
@@ -374,6 +374,15 @@ export class ReservasPageComponent implements OnInit {
 
   goToToday(): void {
     this.selectedDateControl.setValue(new Date());
+  }
+
+  getCourtIcon(type: string | undefined): string {
+    if (!type) return 'sports_soccer';
+    const lowerType = type.toLowerCase();
+    if (lowerType.includes('padel') || lowerType.includes('tenis')) {
+      return 'sports_tennis';
+    }
+    return 'sports_soccer';
   }
 }
 
