@@ -18,6 +18,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/complejos/complejos.routes').then(m => m.COMPLEJOS_ROUTES)
   },
   {
+    path: 'caja',
+    loadChildren: () => import('./features/caja/caja.routes').then(m => m.CAJA_ROUTES)
+  },
+  {
     path: 'forgot-password',
     loadComponent: () => import('./features/login/pages/forgot-password-page/forgot-password-page.component').then(m => m.ForgotPasswordPageComponent)
   },
