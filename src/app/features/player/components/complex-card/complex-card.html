@@ -1,0 +1,27 @@
+<div class="card">
+    <div class="image-container">
+        <img [src]="complex.imageUrl" [alt]="complex.name">
+        <div class="price-badge">
+            <span class="label">desde</span>
+            <span class="price">{{ complex.minPrice | currency:'USD':'symbol':'1.0-0' }}</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            <div class="info">
+                <h3>{{ complex.name }}</h3>
+                <p class="location">{{ complex.location }}</p>
+            </div>
+            @if (complex.logoUrl) {
+            <img [src]="complex.logoUrl" class="logo" alt="logo">
+            }
+        </div>
+
+        <div class="slots">
+            @for (slot of complex.availableSlots; track slot) {
+            <button class="slot-chip">{{ slot }}</button>
+            }
+        </div>
+    </div>
+</div>

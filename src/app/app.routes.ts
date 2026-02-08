@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/reservas/reservas.routes').then(m => m.RESERVAS_ROUTES)
   },
   {
+    path: 'player',
+    loadChildren: () => import('./features/player/player.routes').then(m => m.PLAYER_ROUTES)
+  },
+  {
     path: 'login',
     loadChildren: () => import('./features/login/login.routes').then(m => m.LOGIN_ROUTES)
   },

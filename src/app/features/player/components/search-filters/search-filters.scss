@@ -1,0 +1,150 @@
+.search-container {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 8px 8px 8px 24px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    gap: 8px;
+
+    .filter-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        min-width: 120px;
+        flex: 1;
+
+        mat-icon {
+            color: #22c55e; // Green accent
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .value {
+            font-size: 14px;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        mat-select {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        // Style mat-select for better visibility
+        ::ng-deep {
+            .mat-mdc-select {
+                font-size: 14px;
+                color: #333;
+            }
+
+            .mat-mdc-select-trigger {
+                border: none !important;
+            }
+
+            .mat-mdc-select-value-text {
+                color: #333;
+                font-size: 14px;
+            }
+
+            .mat-mdc-select-placeholder {
+                color: #666;
+                font-size: 14px;
+            }
+
+            .mat-mdc-select-arrow {
+                color: #666;
+            }
+        }
+
+        input {
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+            flex: 1;
+            min-width: 80px;
+            cursor: pointer;
+
+            &::placeholder {
+                color: #999;
+            }
+        }
+
+        .dropdown-arrow {
+            color: #666;
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            margin-left: -4px;
+        }
+
+        &.city {
+            min-width: 160px;
+        }
+
+        &.clickable {
+            cursor: pointer;
+        }
+    }
+
+    // Sport option in dropdown
+    ::ng-deep .sport-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .sport-icon {
+            color: #22c55e;
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    .divider {
+        width: 1px;
+        height: 24px;
+        background: #e0e0e0;
+    }
+
+    .search-button {
+        border-radius: 50px;
+        padding: 12px 24px;
+        font-weight: 500;
+        white-space: nowrap;
+        background: #6b7280; // Gray button like reference
+        color: white;
+
+        &:hover {
+            background: #4b5563;
+        }
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .search-container {
+        flex-wrap: wrap;
+        border-radius: 16px;
+        padding: 16px;
+        gap: 12px;
+
+        .filter-item {
+            flex: 1 1 calc(50% - 12px);
+            min-width: 140px;
+        }
+
+        .divider {
+            display: none;
+        }
+
+        .search-button {
+            width: 100%;
+            margin-top: 8px;
+        }
+    }
+}
