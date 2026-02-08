@@ -37,7 +37,7 @@
               (click)="selectCourt(court)">
               <div class="court-info">
                 <div class="court-icon">
-                  <mat-icon>sports_soccer</mat-icon>
+                  <mat-icon>{{ getCourtIcon(court.type) }}</mat-icon>
                 </div>
                 <div class="court-details">
                   <h4>{{ court.name }}</h4>
