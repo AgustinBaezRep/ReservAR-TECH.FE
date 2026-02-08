@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { 
-  LoginRequest, 
-  RegisterRequest, 
-  ForgotPasswordRequest, 
-  ResetPasswordRequest, 
-  AuthResponse 
+import {
+  LoginRequest,
+  RegisterRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  AuthResponse,
+  UserRole
 } from '../models/auth.model';
 
 @Injectable({
@@ -18,6 +19,10 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<AuthResponse> {
     // TODO: Replace with actual HTTP call to backend
     console.log('Login attempt:', credentials);
+
+    // Simulate Admin role for specific email
+    const role = credentials.email === 'admin@test.com' ? UserRole.ADMIN : UserRole.CLIENT;
+
     return of({
       success: true,
       message: 'Login successful',
@@ -25,10 +30,28 @@ export class AuthService {
       user: {
         id: '1',
         name: 'User Name',
-        email: credentials.email
+        email: credentials.email,
+        role: role
       }
     }).pipe(delay(1000));
   }
+
+  loginWithGoogle(): Observable<AuthResponse> {
+    console.log('Google Login attempt');
+    return of({
+      success: true,
+      message: 'Google Login successful',
+      token: 'mock-google-token',
+      user: {
+        id: 'google-user-id',
+        name: 'Google User',
+        email: 'google@test.com',
+        role: UserRole.CLIENT
+      }
+    }).pipe(delay(1000));
+  }
+
+
 
   register(data: RegisterRequest): Observable<AuthResponse> {
     // TODO: Replace with actual HTTP call to backend
@@ -40,7 +63,8 @@ export class AuthService {
       user: {
         id: '1',
         name: data.name,
-        email: data.email
+        email: data.email,
+        role: UserRole.CLIENT
       }
     }).pipe(delay(1000));
   }

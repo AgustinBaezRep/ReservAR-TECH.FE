@@ -14,6 +14,14 @@ export const routes: Routes = [
     loadChildren: () => import('./features/complejos/complejos.routes').then(m => m.COMPLEJOS_ROUTES)
   },
   {
+    path: 'forgot-password',
+    loadComponent: () => import('./features/login/pages/forgot-password-page/forgot-password-page.component').then(m => m.ForgotPasswordPageComponent)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./features/login/pages/reset-password-page/reset-password-page.component').then(m => m.ResetPasswordPageComponent)
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

@@ -1,60 +1,73 @@
 <div class="login-container">
   <mat-card class="login-card">
     <mat-card-content>
-      <h1 class="login-title">Login</h1>
+      <div class="header-container">
+        <h1 class="login-title">Welcome back</h1>
+        <p class="login-subtitle">Sign in to your account</p>
+      </div>
+
+      <div class="social-login-container">
+        <button mat-stroked-button class="google-button full-width" (click)="onGoogleLogin()" [disabled]="isLoading">
+          <img src="assets/images/google-logo.svg" alt="Google" class="google-icon" onError="this.style.display='none'">
+          Continue with Google
+        </button>
+      </div>
+
+      <div class="divider">
+        <span>Or continue with email</span>
+      </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input 
-            matInput 
-            type="email" 
-            formControlName="email"
-            placeholder="Enter your email"
-          >
+        <div class="form-field-container">
+          <label class="field-label">Email Address</label>
+          <mat-form-field appearance="outline" class="full-width no-subscript">
+            <mat-icon matPrefix>mail_outline</mat-icon>
+            <input matInput type="email" formControlName="email" placeholder="Enter your email">
+          </mat-form-field>
           @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
-            <mat-error>Email is required</mat-error>
+          <mat-error class="field-error">Email is required</mat-error>
           }
           @if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
-            <mat-error>Please enter a valid email</mat-error>
+          <mat-error class="field-error">Please enter a valid email</mat-error>
           }
-        </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input 
-            matInput 
-            type="password" 
-            formControlName="password"
-            placeholder="Enter your password"
-          >
+        <div class="form-field-container">
+          <label class="field-label">Password</label>
+          <mat-form-field appearance="outline" class="full-width no-subscript">
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+              placeholder="Enter your password">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword" type="button">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
           @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
-            <mat-error>Password is required</mat-error>
+          <mat-error class="field-error">Password is required</mat-error>
           }
           @if (loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched) {
-            <mat-error>Password must be at least 6 characters</mat-error>
+          <mat-error class="field-error">Password must be at least 6 characters</mat-error>
           }
-        </mat-form-field>
+        </div>
+
+        <div class="options-container">
+          <mat-checkbox color="primary">Remember me</mat-checkbox>
+          <a routerLink="/forgot-password" class="auth-link-small">Forgot password?</a>
+        </div>
 
         @if (errorMessage) {
-          <div class="error-message">{{ errorMessage }}</div>
+        <div class="error-message">{{ errorMessage }}</div>
         }
 
-        <button 
-          mat-raised-button 
-          color="primary" 
-          type="submit" 
-          class="submit-button"
-          [disabled]="isLoading"
-        >
-          {{ isLoading ? 'Loading...' : 'Accept' }}
+        <button mat-raised-button color="primary" type="submit" class="submit-button" [disabled]="isLoading">
+          {{ isLoading ? 'Loading...' : 'Sign in' }}
         </button>
       </form>
 
-      <div class="links-container">
-        <a routerLink="/login/register" class="auth-link">Register</a>
-        <a routerLink="/login/forgot-password" class="auth-link">Forgot your password?</a>
-        <a routerLink="/login/reset-password" class="auth-link">Reset Password</a>
+      <div class="footer-container">
+        <span class="text-gray">Don't have an account? </span>
+        <a routerLink="/login/register" class="auth-link-small">Sign up</a>
       </div>
     </mat-card-content>
   </mat-card>

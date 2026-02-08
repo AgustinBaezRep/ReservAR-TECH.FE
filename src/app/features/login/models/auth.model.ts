@@ -20,6 +20,11 @@ export interface ResetPasswordRequest {
   confirmPassword: string;
 }
 
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  CLIENT = 'CLIENT'
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -27,6 +32,7 @@ export interface AuthResponse {
   user?: {
     id: string;
     name: string;
-    email: string;
+    email?: string;
+    role: UserRole;
   };
 }
