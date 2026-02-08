@@ -5,7 +5,13 @@
   </div>
 
   <div class="wizard-container">
-    <mat-stepper #stepper [linear]="true">
+    <div class="offline-message" *ngIf="!isComplexOnline">
+      <mat-icon>cloud_off</mat-icon>
+      <h2>Complejo Offline</h2>
+      <p>El complejo está actualmente fuera de línea. No se pueden crear nuevas reservas.</p>
+    </div>
+
+    <mat-stepper #stepper [linear]="true" *ngIf="isComplexOnline">
 
       <mat-step [stepControl]="selectedDateControl" label="Date">
         <div class="step-content date-step">

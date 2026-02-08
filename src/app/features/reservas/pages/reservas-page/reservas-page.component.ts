@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatStepperModule, MatStepper } from '@angular/material/stepper';
@@ -12,6 +12,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ReservationsTableComponent } from '../../components/reservations-table/reservations-table.component';
 import { EditReservationDialogComponent } from '../../components/edit-reservation-dialog/edit-reservation-dialog.component';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
@@ -42,7 +44,7 @@ import { ComplejosService } from '../../../complejos/services/complejos.service'
   templateUrl: './reservas-page.component.html',
   styleUrl: './reservas-page.component.scss'
 })
-export class ReservasPageComponent implements OnInit {
+export class ReservasPageComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') stepper!: MatStepper;
 
   // Data
@@ -50,6 +52,8 @@ export class ReservasPageComponent implements OnInit {
   timeSlots: TimeSlot[] = [];
   reservations: Reservation[] = [];
   allReservations: Reservation[] = [];
+  isComplexOnline: boolean = true;
+  private destroy$ = new Subject<void>();
 
   // Wizard State
   selectedDateControl = new FormControl(new Date(), [Validators.required]);
@@ -81,16 +85,28 @@ export class ReservasPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCourts();
+    this.complejosService.complexData$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.isComplexOnline = data.generalInfo.isOnline;
+        // Filter only active courts
+        this.courts = data.courts.filter(c => c.isActive);
+      });
+
     this.loadAllReservations();
 
     // Reload reservations when date changes to check availability
-    this.selectedDateControl.valueChanges.subscribe(() => {
+    this.selectedDateControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.loadDayReservations();
       this.generateTimeSlots();
       this.selectedCourt = null;
       this.selectedTimeSlot = null;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onDateSelected(date: Date): void {
@@ -137,13 +153,7 @@ export class ReservasPageComponent implements OnInit {
     }
   }
 
-  private loadCourts(): void {
-    // Subscribe to complexData to get active courts
-    this.complejosService.complexData$.subscribe(data => {
-      // Filter only active courts
-      this.courts = data.courts.filter(c => c.isActive);
-    });
-  }
+
 
   private loadDayReservations(): void {
     const dateStr = this.getSelectedDateString();

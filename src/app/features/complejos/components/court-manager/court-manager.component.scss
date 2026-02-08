@@ -29,7 +29,7 @@ mat-form-field {
 
 .attributes-section {
   margin-bottom: 24px;
-  
+
   .attributes-label {
     display: block;
     margin-bottom: 8px;
@@ -69,7 +69,7 @@ mat-form-field {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     .court-type {
       margin-right: auto;
       margin-left: 16px;
@@ -89,6 +89,7 @@ mat-form-field {
   border-radius: 4px;
   font-size: 0.875rem;
   font-weight: 500;
+  transition: all 0.3s ease;
 
   &.active {
     color: #10b981;
@@ -114,6 +115,7 @@ mat-form-field {
 
   .panel-actions {
     margin-top: 16px;
+
     button {
       width: 100%;
     }
