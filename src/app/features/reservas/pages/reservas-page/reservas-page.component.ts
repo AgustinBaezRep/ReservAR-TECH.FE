@@ -12,8 +12,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { ReservationsTableComponent } from '../../components/reservations-table/reservations-table.component';
 import { EditReservationDialogComponent } from '../../components/edit-reservation-dialog/edit-reservation-dialog.component';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
@@ -39,6 +40,7 @@ import { ComplejosService } from '../../../complejos/services/complejos.service'
     MatCardModule,
     MatChipsModule,
     MatSnackBarModule,
+    MatSelectModule,
     ReservationsTableComponent
   ],
   templateUrl: './reservas-page.component.html',
@@ -52,6 +54,7 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
   timeSlots: TimeSlot[] = [];
   reservations: Reservation[] = [];
   allReservations: Reservation[] = [];
+  filteredReservations: Reservation[] = [];
   isComplexOnline: boolean = true;
   private destroy$ = new Subject<void>();
 
@@ -65,6 +68,7 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
 
   // Forms
   bookingForm: FormGroup;
+  filterForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -78,6 +82,13 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
       userName: ['', [Validators.required]],
       userContact: ['', [Validators.required]],
       notes: ['']
+    });
+
+    this.filterForm = this.fb.group({
+      date: [null],
+      courtId: [''],
+      time: [''],
+      user: ['']
     });
 
     this.maxDate.setDate(this.minDate.getDate() + 14);
@@ -96,12 +107,27 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
     this.loadAllReservations();
 
     // Reload reservations when date changes to check availability
-    this.selectedDateControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.loadDayReservations();
-      this.generateTimeSlots();
-      this.selectedCourt = null;
-      this.selectedTimeSlot = null;
-    });
+    this.selectedDateControl.valueChanges
+      .pipe(
+        startWith(this.selectedDateControl.value),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.loadDayReservations();
+        this.generateTimeSlots();
+        this.selectedCourt = null;
+        this.selectedTimeSlot = null;
+      });
+
+    // Subscribe to filter changes
+    this.filterForm.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.applyFilters();
+      });
   }
 
   ngOnDestroy(): void {
@@ -165,12 +191,51 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
   private loadAllReservations(): void {
     this.reservationsService.getAllReservations().subscribe(reservations => {
       this.allReservations = reservations;
+      this.applyFilters();
     });
   }
 
   getSelectedDateString(): string {
     const date = this.selectedDateControl.value || new Date();
     return date.toISOString().split('T')[0];
+  }
+
+  // Filter Logic
+  applyFilters(): void {
+    const { date, courtId, time, user } = this.filterForm.value;
+
+    this.filteredReservations = this.allReservations.filter(reservation => {
+      let matches = true;
+
+      if (date) {
+        const filterDateStr = date.toISOString().split('T')[0];
+        if (reservation.date !== filterDateStr) matches = false;
+      }
+
+      if (matches && courtId) {
+        if (reservation.courtId !== courtId) matches = false;
+      }
+
+      if (matches && time) {
+        if (!reservation.startTime.includes(time)) matches = false;
+      }
+
+      if (matches && user) {
+        const searchTerm = this.normalizeString(user);
+        const userName = this.normalizeString(reservation.userName);
+        if (!userName.includes(searchTerm)) matches = false;
+      }
+
+      return matches;
+    });
+  }
+
+  private normalizeString(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+
+  resetFilters(): void {
+    this.filterForm.reset();
   }
 
   // Step 2 Logic
@@ -269,6 +334,7 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
         { ...this.allReservations[index], ...updates },
         ...this.allReservations.slice(index + 1)
       ];
+      this.applyFilters();
     }
 
     this.reservationsService.updateReservation(id, updates).subscribe({
@@ -307,6 +373,7 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
           { ...this.allReservations[index], status: ReservationStatus.Cancelled },
           ...this.allReservations.slice(index + 1)
         ];
+        this.applyFilters();
       }
 
       this.reservationsService.cancelReservation(reservation.id).subscribe({
@@ -358,6 +425,7 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
         { ...this.allReservations[restoreIndex], status: ReservationStatus.Confirmed },
         ...this.allReservations.slice(restoreIndex + 1)
       ];
+      this.applyFilters();
     }
 
     this.reservationsService.restoreReservation(toast.reservationId).subscribe({
