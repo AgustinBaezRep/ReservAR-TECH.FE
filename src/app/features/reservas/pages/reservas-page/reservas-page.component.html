@@ -147,7 +147,45 @@
 
   <div class="table-container">
     <h2>Reservas Realizadas</h2>
-    <app-reservations-table [reservations]="allReservations" (editReservation)="onEditReservation($event)"
+
+    <!-- Filters Section -->
+    <div class="filters-container" [formGroup]="filterForm">
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Fecha</mat-label>
+        <input matInput [matDatepicker]="filterPicker" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="filterPicker"></mat-datepicker-toggle>
+        <mat-datepicker #filterPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Cancha</mat-label>
+        <mat-select formControlName="courtId">
+          <mat-option value="">Todas</mat-option>
+          <mat-option *ngFor="let court of courts" [value]="court.id">
+            {{ court.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Hora</mat-label>
+        <input matInput formControlName="time" placeholder="Ej: 10:00">
+        <mat-icon matSuffix>schedule</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Usuario</mat-label>
+        <input matInput formControlName="user" placeholder="Nombre usuario">
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+
+      <button mat-stroked-button color="primary" (click)="resetFilters()">
+        <mat-icon>filter_alt_off</mat-icon>
+        Limpiar
+      </button>
+    </div>
+
+    <app-reservations-table [reservations]="filteredReservations" (editReservation)="onEditReservation($event)"
       (cancelReservation)="onCancelReservation($event)">
     </app-reservations-table>
   </div>
