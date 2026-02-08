@@ -1,0 +1,56 @@
+<div class="detail-page" *ngIf="complex">
+    <div class="hero-image" [style.backgroundImage]="'url(' + complex.imageUrl + ')'">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>{{ complex.name }}</h1>
+            <p class="location"><mat-icon>location_on</mat-icon> {{ complex.location }}</p>
+            <button mat-stroked-button color="accent">(ver en mapa)</button>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <h2>Elige tu turno</h2>
+
+        <div class="booking-section">
+            <div class="filters">
+                <button mat-button color="primary"><mat-icon>sports_tennis</mat-icon> Padel</button>
+                <button mat-button><mat-icon>calendar_today</mat-icon> Hoy</button>
+            </div>
+
+            <div class="courts-grid">
+                @for (court of courts; track court.name) {
+                <div class="court-row">
+                    <div class="court-info">
+                        <h3>{{ court.name }}</h3>
+                        <div class="features">
+                            <span>{{ court.surface }}</span>
+                            <span>|</span>
+                            @for (feature of court.features; track feature) {
+                            <span>{{ feature }}</span>
+                            @if (!$last) { <span>|</span> }
+                            }
+                        </div>
+                    </div>
+                    <div class="slots-container">
+                        @for (slot of court.slots; track slot) {
+                        <button mat-stroked-button
+                            [color]="selectedSlot === slot && selectedCourt === court.name ? 'accent' : 'primary'"
+                            (click)="selectSlot(court.name, slot)">
+                            {{ slot }}
+                        </button>
+                        }
+                        @if (court.slots.length === 0) {
+                        <span class="no-slots">No hay turnos disponibles</span>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+            <div class="booking-actions" *ngIf="selectedSlot">
+                <p>Turno seleccionado: <strong>{{ selectedCourt }} - {{ selectedSlot }}hs</strong></p>
+                <button mat-flat-button color="primary" (click)="confirmBooking()">Confirmar Reserva</button>
+            </div>
+        </div>
+    </div>
+</div>

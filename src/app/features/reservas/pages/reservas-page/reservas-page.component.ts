@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatStepperModule, MatStepper } from '@angular/material/stepper';
@@ -76,7 +76,8 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
     private reservationsService: ReservationsService,
     private complejosService: ComplejosService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {
     this.bookingForm = this.fb.group({
       userName: ['', [Validators.required]],
@@ -376,10 +377,13 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
         this.applyFilters();
       }
 
+      // Show undo toast immediately (optimistic UI)
+      this.showUndoToast(reservation);
+      this.cdr.detectChanges(); // Force UI update to show toast immediately
+
       this.reservationsService.cancelReservation(reservation.id).subscribe({
         next: () => {
           this.loadDayReservations(); // Refresh availability
-          this.showUndoToast(reservation);
         },
         error: () => {
           // Revert on error

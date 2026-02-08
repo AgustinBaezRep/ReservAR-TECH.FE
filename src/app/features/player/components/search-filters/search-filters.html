@@ -1,0 +1,54 @@
+<form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-container">
+    <!-- City (Read-only) -->
+    <div class="filter-item city">
+        <mat-icon>location_on</mat-icon>
+        <span class="value">Rosario, Santa Fe</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Sport -->
+    <div class="filter-item">
+        <mat-icon>{{ getSportIcon() }}</mat-icon>
+        <mat-select formControlName="sport" placeholder="Elige deporte">
+            @for (sport of sports; track sport.name) {
+            <mat-option [value]="sport.name">
+                <div class="sport-option">
+                    @if (sport.icon === 'futbol') {
+                    <mat-icon class="sport-icon">sports_soccer</mat-icon>
+                    } @else {
+                    <mat-icon class="sport-icon">sports_tennis</mat-icon>
+                    }
+                    <span>{{ sport.name }}</span>
+                </div>
+            </mat-option>
+            }
+        </mat-select>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Date -->
+    <div class="filter-item clickable" (click)="picker.open()">
+        <mat-icon>calendar_today</mat-icon>
+        <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Fecha" readonly>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-icon class="dropdown-arrow">arrow_drop_down</mat-icon>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Time -->
+    <div class="filter-item">
+        <mat-icon>schedule</mat-icon>
+        <mat-select formControlName="time" placeholder="Hora">
+            @for (slot of timeSlots; track slot) {
+            <mat-option [value]="slot">{{ slot }}</mat-option>
+            }
+        </mat-select>
+    </div>
+
+    <button mat-flat-button color="primary" type="submit" class="search-button">
+        Buscar canchas
+    </button>
+</form>

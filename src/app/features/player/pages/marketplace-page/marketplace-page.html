@@ -1,0 +1,29 @@
+<div class="marketplace-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Encontrá <span class="highlight">canchas</span> y <span class="highlight">jugadores</span> cerca
+                    tuyo</h1>
+                <p class="subtitle">Reservá tu turno en los mejores complejos de Rosario.</p>
+            </div>
+            <div class="hero-image">
+                <img src="https://placehold.co/500x400/ffffff/333333?text=Jugadores" alt="Jugadores">
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Filters Bar -->
+    <div class="search-bar-wrapper">
+        <app-search-filters (search)="onSearch($event)"></app-search-filters>
+    </div>
+
+    <!-- Results Section -->
+    <div class="content-container">
+        <div class="results-header">
+            <h2>{{ filteredComplexes.length }} clubes encontrados en Rosario, Santa Fe, Argentina</h2>
+        </div>
+        <app-complex-list [complexes]="filteredComplexes"></app-complex-list>
+    </div>
+</div>
