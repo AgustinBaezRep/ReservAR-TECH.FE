@@ -39,7 +39,7 @@ export class CourtFormDialogComponent {
       name: [data.name, Validators.required],
       type: [data.type, Validators.required],
       floorType: [''], // Assuming we might add this to the model later
-      price: [data.price, [Validators.required, Validators.min(0)]],
+      price: [data.price, [Validators.required, Validators.min(1)]],
       hasLighting: [false], // Assuming we might add this to the model later
       hasRoof: [false] // Assuming we might add this to the model later
     });

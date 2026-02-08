@@ -14,6 +14,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ComplejosService } from '../../services/complejos.service';
+import { ComplexToastService } from '../../services/complex-toast.service';
 import { Court } from '../../../reservas/models/reservation.model';
 import { ConfirmDialogComponent } from '../../../reservas/components/confirm-dialog/confirm-dialog.component';
 import { CourtFormDialogComponent } from '../court-form-dialog/court-form-dialog.component';
@@ -42,20 +43,21 @@ export class CourtManagerComponent implements OnInit, OnDestroy {
   courtForm: FormGroup;
   courts: Court[] = [];
   private destroy$ = new Subject<void>();
-  
+
   sportTypes = ['Fútbol 5', 'Fútbol 7', 'Fútbol 9', 'Fútbol 11', 'Padel', 'Tenis', 'Basket'];
   floorTypes = ['Césped Sintético', 'Césped Natural', 'Cemento', 'Parquet', 'Polvo de Ladrillo'];
 
   constructor(
     private fb: FormBuilder,
     private complejosService: ComplejosService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastService: ComplexToastService
   ) {
     this.courtForm = this.fb.group({
       name: ['', Validators.required],
       type: ['', Validators.required],
       floorType: [''],
-      price: [0, [Validators.required, Validators.min(0)]],
+      price: [null, [Validators.required, Validators.min(1)]],
       hasLighting: [false],
       hasRoof: [false]
     });
@@ -77,6 +79,8 @@ export class CourtManagerComponent implements OnInit, OnDestroy {
   createCourt() {
     if (this.courtForm.valid) {
       const formValue = this.courtForm.value;
+      if (formValue.price <= 0) return; // Explicit check to prevent zero/negative price
+
       const newCourt: Court = {
         id: crypto.randomUUID(),
         name: formValue.name,
@@ -88,10 +92,10 @@ export class CourtManagerComponent implements OnInit, OnDestroy {
         // or just rely on what's there. The user asked for attributes, so we should probably
         // update the Court model eventually. For now, let's just save what we can.
       };
-      
+
       this.complejosService.addCourt(newCourt);
       this.courtForm.reset({
-        price: 0,
+        price: null,
         hasLighting: false,
         hasRoof: false
       });
@@ -100,25 +104,28 @@ export class CourtManagerComponent implements OnInit, OnDestroy {
 
   toggleCourtStatus(court: Court, event: MouseEvent) {
     event.stopPropagation();
-    this.complejosService.toggleCourtStatus(court.id);
+
+    if (court.isActive) {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'Deactivate Court',
+          message: `Are you sure you want to deactivate ${court.name}?`,
+          confirmText: 'Desactivar'
+        }
+      });
+
+
+      dialogRef.beforeClosed().subscribe(result => {
+        if (result) {
+          this.complejosService.toggleCourtStatus(court.id);
+        }
+      });
+    } else {
+      this.complejosService.toggleCourtStatus(court.id);
+    }
   }
 
-  deleteCourt(court: Court, event: MouseEvent) {
-    event.stopPropagation();
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'Delete Court',
-        message: `Are you sure you want to delete ${court.name}?`
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.complejosService.deleteCourt(court.id);
-      }
-    });
-  }
 
   editCourt(court: Court, event: MouseEvent) {
     event.stopPropagation();
@@ -133,4 +140,35 @@ export class CourtManagerComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  deleteCourt(court: Court, event: MouseEvent) {
+    event.stopPropagation();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Court',
+        message: `Are you sure you want to delete ${court.name}?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Optimistic update: remove locally immediately
+        this.courts = this.courts.filter(c => c.id !== court.id);
+
+        this.toastService.show(
+          `${court.name} eliminada`,
+          () => {
+            // onUndo: Restore court
+            this.courts = this.complejosService.currentData.courts || [];
+          },
+          () => {
+            // onCommit: Actual delete
+            this.complejosService.deleteCourt(court.id);
+          }
+        );
+      }
+    });
+  }
 }
+
