@@ -1,0 +1,104 @@
+.manage-users-section {
+    background: #fff;
+    border-radius: 4px;
+    padding: 24px;
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 24px 0;
+    }
+
+    .filter-section {
+        margin-bottom: 24px;
+    }
+
+    .filter-input {
+        width: 200px;
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #333;
+
+        &:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        &::placeholder {
+            color: #999;
+        }
+    }
+
+    .users-table {
+        overflow-x: auto;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+
+            th,
+            td {
+                padding: 14px 16px;
+                text-align: left;
+                border-bottom: 1px solid #eee;
+            }
+
+            th {
+                font-size: 12px;
+                font-weight: 500;
+                color: #666;
+                background-color: #fafafa;
+            }
+
+            td {
+                font-size: 14px;
+                color: #333;
+            }
+
+            tbody tr:hover {
+                background-color: #fafafa;
+            }
+        }
+    }
+
+    .actions-cell {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s;
+
+        mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
+
+        &:hover {
+            color: #333;
+        }
+
+        &.delete:hover {
+            color: #dc3545;
+        }
+    }
+
+    .empty-message {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+        padding: 32px !important;
+    }
+}
