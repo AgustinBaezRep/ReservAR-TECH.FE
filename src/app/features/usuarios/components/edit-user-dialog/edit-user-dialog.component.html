@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Edit User</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="editForm">
+        <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" formControlName="name" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" formControlName="email" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Role</label>
+            <select formControlName="role" class="form-select">
+                <option value="CLIENT">Customer</option>
+                <option value="ADMIN">admin</option>
+            </select>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="cancel-btn" (click)="onCancel()">Cancel</button>
+    <button class="save-btn" (click)="onSave()" [disabled]="editForm.invalid || isLoading">
+        @if (isLoading) {
+        Saving...
+        } @else {
+        Save Changes
+        }
+    </button>
+</mat-dialog-actions>

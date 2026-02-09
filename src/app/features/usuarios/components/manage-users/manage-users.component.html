@@ -1,0 +1,44 @@
+<div class="manage-users-section">
+    <h2 class="section-title">Manage Users</h2>
+
+    <div class="filter-section">
+        <input type="text" class="filter-input" placeholder="Filter by email" [(ngModel)]="filterEmail"
+            (ngModelChange)="applyFilter()">
+    </div>
+
+    <div class="users-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Date of Birth</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (user of filteredUsers; track user.id) {
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.createdAt | date:'MMMM d, yyyy' }}</td>
+                    <td>{{ user.role === 'ADMIN' ? 'admin' : 'customer' }}</td>
+                    <td class="actions-cell">
+                        <button class="action-btn" (click)="onEdit(user)" title="Edit">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button class="action-btn delete" (click)="onDelete(user)" title="Delete">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="5" class="empty-message">No users found</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
