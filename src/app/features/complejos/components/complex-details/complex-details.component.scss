@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-bottom: 80px; // Space for floating button
 }
 
 .card-content {
@@ -28,10 +29,6 @@
 
 mat-form-field {
   width: 100%;
-}
-
-.form-actions {
-  margin-top: 16px;
 }
 
 // Operating Hours Styles
@@ -97,5 +94,56 @@ mat-form-field {
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Floating Save Button
+.floating-save-container {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.floating-save-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: white;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1976d2;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    color: #1976d2;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }

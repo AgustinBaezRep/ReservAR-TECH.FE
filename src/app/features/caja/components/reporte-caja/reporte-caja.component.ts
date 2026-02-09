@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CajaService } from '../../services/caja.service';
 import { BoxReport, Movement } from '../../models/caja.models';
 import { Observable, combineLatest, startWith, map } from 'rxjs';
@@ -27,37 +28,42 @@ import { Observable, combineLatest, startWith, map } from 'rxjs';
     MatInputModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSnackBarModule
   ],
   template: `
     <div class="container">
       <div class="header">
-        <h2>Box Management</h2>
+        <h2>Reporte de Caja</h2>
+        <button mat-raised-button color="primary" (click)="exportReport()" class="export-btn">
+          <mat-icon>download</mat-icon>
+          Exportar Excel
+        </button>
       </div>
 
       <!-- Top Metrics -->
       <div class="metrics-row" *ngIf="report$ | async as report">
         <mat-card class="metric-card">
             <mat-card-content>
-                <div class="metric-label">Total Revenue</div>
-                <div class="metric-value green">{{ report.totalRevenue | currency }}</div>
+                <div class="metric-label">Ingresos Totales</div>
+                <div class="metric-value green">{{ report.totalRevenue | currency:'ARS':'symbol':'1.0-0' }}</div>
             </mat-card-content>
         </mat-card>
         <mat-card class="metric-card">
             <mat-card-content>
-                <div class="metric-label">Total Costs</div>
-                <div class="metric-value red">{{ report.totalCost | currency }}</div>
+                <div class="metric-label">Costos Totales</div>
+                <div class="metric-value red">{{ report.totalCost | currency:'ARS':'symbol':'1.0-0' }}</div>
             </mat-card-content>
         </mat-card>
         <mat-card class="metric-card">
             <mat-card-content>
-                <div class="metric-label">Net Profit</div>
-                <div class="metric-value green">{{ report.netProfit | currency }}</div>
+                <div class="metric-label">Ganancia Neta</div>
+                <div class="metric-value green">{{ report.netProfit | currency:'ARS':'symbol':'1.0-0' }}</div>
             </mat-card-content>
         </mat-card>
         <mat-card class="metric-card">
             <mat-card-content>
-                <div class="metric-label">Profit Margin</div>
+                <div class="metric-label">Margen de Ganancia</div>
                 <div class="metric-value green">{{ getProfitMargin(report.totalRevenue, report.netProfit) }}%</div>
             </mat-card-content>
         </mat-card>
@@ -67,23 +73,23 @@ import { Observable, combineLatest, startWith, map } from 'rxjs';
        <div class="metrics-row" *ngIf="report$ | async as report">
          <mat-card class="category-card">
             <mat-card-header>
-                <mat-card-title>Product Sales</mat-card-title>
+                <mat-card-title>Ventas de Productos</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <div class="sub-metric">Transactions: {{ getCategoryStats(report.movements, 'Venta').count }}</div>
-                <div class="sub-metric">Revenue: {{ getCategoryStats(report.movements, 'Venta').revenue | currency }}</div>
-                <div class="sub-metric">Profit: {{ getCategoryStats(report.movements, 'Venta').profit | currency }}</div>
+                <div class="sub-metric">Transacciones: {{ getCategoryStats(report.movements, 'Venta').count }}</div>
+                <div class="sub-metric">Ingresos: {{ getCategoryStats(report.movements, 'Venta').revenue | currency:'ARS':'symbol':'1.0-0' }}</div>
+                <div class="sub-metric">Ganancia: {{ getCategoryStats(report.movements, 'Venta').profit | currency:'ARS':'symbol':'1.0-0' }}</div>
             </mat-card-content>
          </mat-card>
 
          <mat-card class="category-card">
             <mat-card-header>
-                <mat-card-title>Court Reservations</mat-card-title>
+                <mat-card-title>Reservas de Canchas</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <div class="sub-metric">Transactions: {{ getCategoryStats(report.movements, 'Reserva').count }}</div>
-                <div class="sub-metric">Revenue: {{ getCategoryStats(report.movements, 'Reserva').revenue | currency }}</div>
-                <div class="sub-metric">Profit: {{ getCategoryStats(report.movements, 'Reserva').profit | currency }}</div>
+                <div class="sub-metric">Transacciones: {{ getCategoryStats(report.movements, 'Reserva').count }}</div>
+                <div class="sub-metric">Ingresos: {{ getCategoryStats(report.movements, 'Reserva').revenue | currency:'ARS':'symbol':'1.0-0' }}</div>
+                <div class="sub-metric">Ganancia: {{ getCategoryStats(report.movements, 'Reserva').profit | currency:'ARS':'symbol':'1.0-0' }}</div>
             </mat-card-content>
          </mat-card>
        </div>
@@ -91,79 +97,86 @@ import { Observable, combineLatest, startWith, map } from 'rxjs';
       <!-- Filters -->
       <mat-card class="filters-card">
          <mat-card-header>
-            <mat-card-title>Transaction Filters</mat-card-title>
+            <mat-card-title>Filtros de Transacciones</mat-card-title>
          </mat-card-header>
          <mat-card-content>
             <form [formGroup]="filterForm" class="filters-form">
                 <mat-form-field appearance="outline">
-                    <mat-label>Transaction Type</mat-label>
+                    <mat-label>Buscar por nombre</mat-label>
+                    <input matInput formControlName="searchName" placeholder="Buscar...">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo de Transacción</mat-label>
                     <mat-select formControlName="type">
-                        <mat-option value="All">All Transactions</mat-option>
+                        <mat-option value="All">Todas las Transacciones</mat-option>
                         <mat-option value="Venta">Venta</mat-option>
                         <mat-option value="Reserva">Reserva</mat-option>
+                        <mat-option value="Cancelación">Cancelación</mat-option>
                         <mat-option value="Gasto">Gasto</mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
-                    <mat-label>From Date</mat-label>
+                    <mat-label>Fecha Desde</mat-label>
                     <input matInput [matDatepicker]="picker1" formControlName="fromDate">
                     <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
-                    <mat-label>To Date</mat-label>
+                    <mat-label>Fecha Hasta</mat-label>
                     <input matInput [matDatepicker]="picker2" formControlName="toDate">
                     <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
 
-                <button mat-button (click)="clearFilters()">Clear Filters</button>
+                <button mat-button (click)="clearFilters()">Limpiar Filtros</button>
             </form>
          </mat-card-content>
       </mat-card>
 
       <!-- History Table -->
       <div class="table-container" *ngIf="report$ | async as report">
-        <h3>Transaction History</h3>
+        <h3>Historial de Transacciones</h3>
         <table mat-table [dataSource]="report.movements" class="mat-elevation-z8">
             <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
             <td mat-cell *matCellDef="let element"> {{element.date | date:'d/M/yyyy'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <th mat-header-cell *matHeaderCellDef> Tipo </th>
             <td mat-cell *matCellDef="let element"> 
                 <span class="badge" [class]="getBadgeClass(element.type)">{{element.type}}</span>
             </td>
             </ng-container>
 
             <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef> Description </th>
+            <th mat-header-cell *matHeaderCellDef> Descripción </th>
             <td mat-cell *matCellDef="let element"> {{element.description}} </td>
             </ng-container>
 
             <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef> Amount </th>
-            <td mat-cell *matCellDef="let element"> {{element.amount | currency}} </td>
+            <th mat-header-cell *matHeaderCellDef> Monto </th>
+            <td mat-cell *matCellDef="let element"> {{element.amount | currency:'ARS':'symbol':'1.0-0'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="cost">
-            <th mat-header-cell *matHeaderCellDef> Cost </th>
-            <td mat-cell *matCellDef="let element"> {{element.cost | currency}} </td>
+            <th mat-header-cell *matHeaderCellDef> Costo </th>
+            <td mat-cell *matCellDef="let element"> {{element.cost | currency:'ARS':'symbol':'1.0-0'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="profit">
-            <th mat-header-cell *matHeaderCellDef> Profit </th>
+            <th mat-header-cell *matHeaderCellDef> Ganancia </th>
             <td mat-cell *matCellDef="let element" [class.positive]="element.profit > 0" [class.negative]="element.profit < 0"> 
-                {{element.profit | currency}} 
+                {{element.profit | currency:'ARS':'symbol':'1.0-0'}} 
             </td>
             </ng-container>
 
             <ng-container matColumnDef="paymentMethod">
-            <th mat-header-cell *matHeaderCellDef> Payment </th>
+            <th mat-header-cell *matHeaderCellDef> Método de Pago </th>
             <td mat-cell *matCellDef="let element"> 
                 <span class="payment-badge" 
                       [class.payment-mp]="element.paymentMethod === 'Mercado Pago'"
@@ -181,8 +194,9 @@ import { Observable, combineLatest, startWith, map } from 'rxjs';
   `,
   styles: [`
     .container { padding: 32px; background-color: #f8f9fa; min-height: 100vh; font-family: 'Inter', sans-serif; }
-    .header { margin-bottom: 32px; }
+    .header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
     .header h2 { font-size: 24px; font-weight: 600; color: #1a1a1a; margin: 0; }
+    .export-btn { display: flex; align-items: center; gap: 8px; }
     
     /* Metrics Rows */
     .metrics-row { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
@@ -217,6 +231,7 @@ import { Observable, combineLatest, startWith, map } from 'rxjs';
     .badge { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; }
     .badge-venta { background-color: #eff6ff; color: #3b82f6; } /* Blue */
     .badge-reserva { background-color: #f0fdf4; color: #22c55e; } /* Green */
+    .badge-cancelacion { background-color: #fff7ed; color: #ea580c; } /* Orange */
     .badge-gasto { background-color: #fef2f2; color: #ef4444; }   /* Red */
     
     .payment-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
@@ -238,9 +253,11 @@ export class ReporteCajaComponent implements OnInit {
 
   constructor(
     private cajaService: CajaService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {
     this.filterForm = this.fb.group({
+      searchName: [''],
       type: ['All'],
       fromDate: [null],
       toDate: [null]
@@ -253,6 +270,14 @@ export class ReporteCajaComponent implements OnInit {
     ]).pipe(
       map(([baseReport, filters]) => {
         let filteredMovements = baseReport.movements;
+
+        // Name/Description Filter
+        if (filters.searchName && filters.searchName.trim()) {
+          const searchTerm = filters.searchName.toLowerCase().trim();
+          filteredMovements = filteredMovements.filter(m =>
+            m.description.toLowerCase().includes(searchTerm)
+          );
+        }
 
         // Type Filter
         if (filters.type && filters.type !== 'All') {
@@ -310,16 +335,30 @@ export class ReporteCajaComponent implements OnInit {
     switch (type) {
       case 'Venta': return 'badge-venta';
       case 'Reserva': return 'badge-reserva';
+      case 'Cancelación': return 'badge-cancelacion';
       case 'Gasto': return 'badge-gasto';
       default: return '';
     }
   }
 
   clearFilters() {
-    this.filterForm.reset({ type: 'All', fromDate: null, toDate: null });
+    this.filterForm.reset({ searchName: '', type: 'All', fromDate: null, toDate: null });
   }
 
   exportReport() {
-    this.cajaService.exportReportToExcel();
+    try {
+      this.cajaService.exportReportToExcel();
+      this.snackBar.open('Reporte exportado exitosamente', 'Cerrar', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      });
+    } catch (error) {
+      this.snackBar.open('Error al exportar el reporte', 'Cerrar', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      });
+    }
   }
 }

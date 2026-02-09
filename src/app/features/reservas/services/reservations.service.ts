@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { map, delay } from 'rxjs/operators';
+import { map, delay, tap } from 'rxjs/operators';
 import { Reservation } from '../models/reservation.model';
 import { ReservationStatus } from '../models/reservation-status.enum';
+import { CajaService } from '../../caja/services/caja.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { ReservationStatus } from '../models/reservation-status.enum';
 export class ReservationsService {
   private reservationsSubject = new BehaviorSubject<Reservation[]>(this.getMockReservations());
   public reservations$ = this.reservationsSubject.asObservable();
+
+  constructor(private cajaService: CajaService) { }
 
   private getMockReservations(): Reservation[] {
     const today = new Date().toISOString().split('T')[0];
@@ -93,6 +96,9 @@ export class ReservationsService {
     const currentReservations = this.reservationsSubject.value;
     this.reservationsSubject.next([...currentReservations, newReservation]);
 
+    // Register in Caja
+    this.cajaService.registerReservationMovement(newReservation, 'create');
+
     return of(newReservation).pipe(delay(1000));
   }
 
@@ -104,8 +110,11 @@ export class ReservationsService {
       throw new Error('Reservation not found');
     }
 
+    const originalReservation = currentReservations[index];
+    const previousPrice = originalReservation.price;
+
     const updatedReservation: Reservation = {
-      ...currentReservations[index],
+      ...originalReservation,
       ...updates,
       updatedAt: new Date()
     };
@@ -114,16 +123,37 @@ export class ReservationsService {
     newReservations[index] = updatedReservation;
     this.reservationsSubject.next(newReservations);
 
+    // Register price change in Caja (if price changed)
+    if (updates.price !== undefined && updates.price !== previousPrice) {
+      this.cajaService.registerReservationMovement(updatedReservation, 'update', previousPrice);
+    }
+
     return of(updatedReservation).pipe(delay(1000));
   }
 
   cancelReservation(id: string): Observable<void> {
+    const currentReservations = this.reservationsSubject.value;
+    const reservation = currentReservations.find(r => r.id === id);
+
+    if (reservation) {
+      // Register cancellation in Caja
+      this.cajaService.registerReservationMovement(reservation, 'cancel');
+    }
+
     return this.updateReservation(id, { status: ReservationStatus.Cancelled }).pipe(
       map(() => void 0)
     );
   }
 
   restoreReservation(id: string): Observable<void> {
+    const currentReservations = this.reservationsSubject.value;
+    const reservation = currentReservations.find(r => r.id === id);
+
+    if (reservation) {
+      // Register restoration as new reservation in Caja
+      this.cajaService.registerReservationMovement(reservation, 'create');
+    }
+
     return this.updateReservation(id, { status: ReservationStatus.Confirmed }).pipe(
       map(() => void 0)
     );
@@ -131,8 +161,16 @@ export class ReservationsService {
 
   deleteReservation(id: string): Observable<void> {
     const currentReservations = this.reservationsSubject.value;
+    const reservation = currentReservations.find(r => r.id === id);
+
+    // Register deletion as cancellation in Caja (if not already cancelled)
+    if (reservation && reservation.status !== ReservationStatus.Cancelled) {
+      this.cajaService.registerReservationMovement(reservation, 'cancel');
+    }
+
     const filtered = currentReservations.filter(r => r.id !== id);
     this.reservationsSubject.next(filtered);
     return of(void 0).pipe(delay(1000));
   }
 }
+

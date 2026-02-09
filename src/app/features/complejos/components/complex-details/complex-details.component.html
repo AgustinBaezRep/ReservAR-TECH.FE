@@ -2,44 +2,40 @@
   <!-- General Information -->
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Complex Information</mat-card-title>
+      <mat-card-title>Información del Complejo</mat-card-title>
     </mat-card-header>
     <mat-card-content class="card-content">
       <form [formGroup]="generalInfoForm" class="details-form">
         <div class="form-row two-col">
           <mat-form-field appearance="outline">
-            <mat-label>Complex Name</mat-label>
-            <input matInput formControlName="name" placeholder="Enter complex name">
+            <mat-label>Nombre del Complejo</mat-label>
+            <input matInput formControlName="name" placeholder="Ingrese el nombre del complejo">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Address</mat-label>
-            <input matInput formControlName="address" placeholder="Enter street address">
+            <mat-label>Dirección</mat-label>
+            <input matInput formControlName="address" placeholder="Ingrese la dirección">
           </mat-form-field>
         </div>
 
         <div class="form-row two-col">
           <mat-form-field appearance="outline">
-            <mat-label>Latitude</mat-label>
-            <input matInput formControlName="latitude" placeholder="Enter latitude">
+            <mat-label>Latitud</mat-label>
+            <input matInput formControlName="latitude" placeholder="Ingrese la latitud">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Longitude</mat-label>
-            <input matInput formControlName="longitude" placeholder="Enter longitude">
+            <mat-label>Longitud</mat-label>
+            <input matInput formControlName="longitude" placeholder="Ingrese la longitud">
           </mat-form-field>
         </div>
 
         <mat-form-field appearance="outline">
-          <mat-label>Administrator Phone</mat-label>
-          <input matInput formControlName="adminPhone" placeholder="Enter phone number">
+          <mat-label>Teléfono del Administrador</mat-label>
+          <input matInput formControlName="adminPhone" placeholder="Ingrese el número de teléfono">
         </mat-form-field>
 
-        <mat-checkbox formControlName="isOnline">Complex is online</mat-checkbox>
-
-        <div class="form-actions">
-          <button mat-raised-button color="primary" (click)="saveGeneralInfo()">Save Complex Information</button>
-        </div>
+        <mat-checkbox formControlName="isOnline">Complejo en línea</mat-checkbox>
       </form>
     </mat-card-content>
   </mat-card>
@@ -47,15 +43,15 @@
   <!-- Operating Hours -->
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Operating Hours</mat-card-title>
+      <mat-card-title>Horarios de Operación</mat-card-title>
     </mat-card-header>
     <mat-card-content class="card-content">
       <form [formGroup]="operatingHoursForm">
         <div class="hours-header">
-          <div class="col-day">Day</div>
-          <div class="col-open">Open</div>
-          <div class="col-time">Opening Time</div>
-          <div class="col-time">Closing Time</div>
+          <div class="col-day">Día</div>
+          <div class="col-open">Abierto</div>
+          <div class="col-time">Hora de Apertura</div>
+          <div class="col-time">Hora de Cierre</div>
         </div>
 
         <div formArrayName="days" class="hours-list">
@@ -82,10 +78,6 @@
             </div>
           </div>
         </div>
-
-        <div class="form-actions">
-          <button mat-raised-button color="primary" (click)="saveOperatingHours()">Save Operating Hours</button>
-        </div>
       </form>
     </mat-card-content>
   </mat-card>
@@ -93,22 +85,18 @@
   <!-- Available Services -->
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Available Services</mat-card-title>
+      <mat-card-title>Servicios Disponibles</mat-card-title>
     </mat-card-header>
     <mat-card-content class="card-content">
       <form [formGroup]="servicesForm">
         <div class="services-grid">
           <mat-checkbox formControlName="wifi">WiFi</mat-checkbox>
-          <mat-checkbox formControlName="parking">Parking</mat-checkbox>
+          <mat-checkbox formControlName="parking">Estacionamiento</mat-checkbox>
           <mat-checkbox formControlName="buffet">Buffet</mat-checkbox>
-          <mat-checkbox formControlName="showers">Showers</mat-checkbox>
-          <mat-checkbox formControlName="lighting">Lighting</mat-checkbox>
-          <mat-checkbox formControlName="roofing">Roofing</mat-checkbox>
+          <mat-checkbox formControlName="showers">Duchas</mat-checkbox>
+          <mat-checkbox formControlName="lighting">Iluminación</mat-checkbox>
+          <mat-checkbox formControlName="roofing">Techado</mat-checkbox>
           <mat-checkbox formControlName="lockers">Lockers</mat-checkbox>
-        </div>
-
-        <div class="form-actions">
-          <button mat-raised-button color="primary" (click)="saveServices()">Save Available Services</button>
         </div>
       </form>
     </mat-card-content>
@@ -122,22 +110,24 @@
     <mat-card-content class="card-content">
       <form [formGroup]="mercadoPagoForm" class="details-form">
         <mat-form-field appearance="outline">
-          <mat-label>Mercado Pago Client ID</mat-label>
-          <input matInput formControlName="clientId" placeholder="Enter Mercado Pago Client ID">
+          <mat-label>Client ID de Mercado Pago</mat-label>
+          <input matInput formControlName="clientId" placeholder="Ingrese el Client ID de Mercado Pago">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Mercado Pago Client Secret</mat-label>
-          <input matInput formControlName="clientSecret" type="password" placeholder="Enter Mercado Pago Client Secret">
+          <mat-label>Client Secret de Mercado Pago</mat-label>
+          <input matInput formControlName="clientSecret" type="password"
+            placeholder="Ingrese el Client Secret de Mercado Pago">
         </mat-form-field>
-
-        <div class="form-actions">
-          <button mat-raised-button color="primary" (click)="saveMercadoPago()">
-            <mat-icon>save</mat-icon>
-            Guardar
-          </button>
-        </div>
       </form>
     </mat-card-content>
   </mat-card>
+</div>
+
+<!-- Floating Save Button -->
+<div class="floating-save-container" *ngIf="hasUnsavedChanges">
+  <button class="floating-save-button" (click)="saveAllChanges()">
+    <mat-icon>save</mat-icon>
+    Guardar
+  </button>
 </div>

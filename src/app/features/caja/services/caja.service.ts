@@ -151,6 +151,65 @@ export class CajaService {
         this.movementsSubject.next([...current, movement]);
     }
 
+    /**
+     * Register a reservation movement in the caja report
+     * @param reservation - The reservation object
+     * @param actionType - 'create' | 'cancel' | 'update'
+     * @param previousPrice - For updates, the previous price to calculate the difference
+     */
+    registerReservationMovement(
+        reservation: { id: string; courtName: string; userName: string; price: number; date: string; startTime: string; endTime: string },
+        actionType: 'create' | 'cancel' | 'update',
+        previousPrice?: number
+    ) {
+        const reservationDate = new Date(reservation.date + 'T' + reservation.startTime);
+
+        if (actionType === 'create') {
+            const movement: Movement = {
+                id: Date.now().toString(),
+                type: 'Reserva',
+                description: `Reserva ${reservation.courtName} - ${reservation.userName} (${reservation.startTime}-${reservation.endTime})`,
+                amount: reservation.price,
+                cost: 0,
+                profit: reservation.price,
+                date: reservationDate,
+                category: 'Reserva Cancha',
+                paymentMethod: 'Pendiente',
+                reservationId: reservation.id
+            };
+            this.addMovement(movement);
+        } else if (actionType === 'cancel') {
+            const movement: Movement = {
+                id: Date.now().toString(),
+                type: 'Cancelación',
+                description: `Cancelación Reserva ${reservation.courtName} - ${reservation.userName}`,
+                amount: -reservation.price,
+                cost: 0,
+                profit: -reservation.price,
+                date: new Date(),
+                category: 'Cancelación Reserva',
+                reservationId: reservation.id
+            };
+            this.addMovement(movement);
+        } else if (actionType === 'update' && previousPrice !== undefined) {
+            const priceDiff = reservation.price - previousPrice;
+            if (priceDiff !== 0) {
+                const movement: Movement = {
+                    id: Date.now().toString(),
+                    type: priceDiff > 0 ? 'Reserva' : 'Cancelación',
+                    description: `Ajuste Reserva ${reservation.courtName} - ${priceDiff > 0 ? 'Aumento' : 'Reducción'}`,
+                    amount: priceDiff,
+                    cost: 0,
+                    profit: priceDiff,
+                    date: new Date(),
+                    category: 'Ajuste Reserva',
+                    reservationId: reservation.id
+                };
+                this.addMovement(movement);
+            }
+        }
+    }
+
     // Reporting (unchanged)
     getReport(startDate?: Date, endDate?: Date): Observable<BoxReport> {
         let movements = this.movementsSubject.value;

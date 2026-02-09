@@ -22,23 +22,31 @@ import { Product } from '../../models/caja.models';
     MatCheckboxModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit' : 'New' }} Item</h2>
+    <h2 mat-dialog-title>{{ data ? 'Editar' : 'Nuevo' }} Producto</h2>
     <mat-dialog-content>
       <form [formGroup]="form" class="dialog-form">
         <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Item Name</mat-label>
-            <input matInput formControlName="name" placeholder="Ex. Water Bottle">
+            <mat-label>Nombre del Producto</mat-label>
+            <input matInput formControlName="name" placeholder="Ej: Agua Mineral">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="category">
+              <mat-option value="Articulo">Artículo</mat-option>
+              <mat-option value="Concepto">Concepto</mat-option>
+            </mat-select>
         </mat-form-field>
 
         <div class="row">
             <mat-form-field appearance="outline" class="w-half">
-                <mat-label>Purchase Price</mat-label>
+                <mat-label>Precio de Compra</mat-label>
                 <input matInput type="number" formControlName="purchasePrice">
                 <span matTextPrefix>$&nbsp;</span>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-half">
-                <mat-label>Sale Price</mat-label>
+                <mat-label>Precio de Venta</mat-label>
                 <input matInput type="number" formControlName="price">
                 <span matTextPrefix>$&nbsp;</span>
             </mat-form-field>
@@ -51,19 +59,19 @@ import { Product } from '../../models/caja.models';
             </mat-form-field>
             
             <div class="w-half checkbox-container">
-                 <mat-checkbox formControlName="isActive">Active</mat-checkbox>
+                 <mat-checkbox formControlName="isActive">Activo</mat-checkbox>
             </div>
         </div>
         
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description"></textarea>
+          <mat-label>Descripción</mat-label>
+          <textarea matInput formControlName="description" placeholder="Descripción opcional"></textarea>
         </mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="save()">Save</button>
+      <button mat-button mat-dialog-close>Cancelar</button>
+      <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="save()">Guardar</button>
     </mat-dialog-actions>
   `,
   styles: [`
