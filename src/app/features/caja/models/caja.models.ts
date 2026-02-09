@@ -22,7 +22,7 @@ export interface Sale {
 
 export interface Movement {
     id: string;
-    type: 'Venta' | 'Reserva' | 'Gasto';
+    type: 'Venta' | 'Reserva' | 'Gasto' | 'Cancelación';
     description: string;
     amount: number; // Total Revenue for this item
     cost?: number;  // Total Cost for this item (for profit calculation)
@@ -30,6 +30,7 @@ export interface Movement {
     date: Date;
     category: string; // e.g., 'Producto', 'Cancha', 'General'
     paymentMethod?: string;
+    reservationId?: string; // For linking to original reservation
 }
 
 export interface BoxReport {

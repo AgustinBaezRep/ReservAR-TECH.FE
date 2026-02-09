@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, tap } from 'rxjs';
 import {
   LoginRequest,
   RegisterRequest,
@@ -13,6 +13,8 @@ import {
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly TOKEN_KEY = 'auth_token';
+  private readonly USER_KEY = 'auth_user';
 
   constructor() { }
 
@@ -33,7 +35,17 @@ export class AuthService {
         email: credentials.email,
         role: role
       }
-    }).pipe(delay(1000));
+    }).pipe(
+      delay(1000),
+      tap(response => {
+        if (response.success && response.token) {
+          this.storeToken(response.token);
+          if (response.user) {
+            this.storeUser(response.user);
+          }
+        }
+      })
+    );
   }
 
   loginWithGoogle(): Observable<AuthResponse> {
@@ -48,7 +60,17 @@ export class AuthService {
         email: 'google@test.com',
         role: UserRole.CLIENT
       }
-    }).pipe(delay(1000));
+    }).pipe(
+      delay(1000),
+      tap(response => {
+        if (response.success && response.token) {
+          this.storeToken(response.token);
+          if (response.user) {
+            this.storeUser(response.user);
+          }
+        }
+      })
+    );
   }
 
 
@@ -66,7 +88,17 @@ export class AuthService {
         email: data.email,
         role: UserRole.CLIENT
       }
-    }).pipe(delay(1000));
+    }).pipe(
+      delay(1000),
+      tap(response => {
+        if (response.success && response.token) {
+          this.storeToken(response.token);
+          if (response.user) {
+            this.storeUser(response.user);
+          }
+        }
+      })
+    );
   }
 
   forgotPassword(data: ForgotPasswordRequest): Observable<AuthResponse> {
@@ -88,12 +120,31 @@ export class AuthService {
   }
 
   logout(): void {
-    // TODO: Clear token and user data
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_KEY);
     console.log('User logged out');
   }
 
   isAuthenticated(): boolean {
-    // TODO: Check if user has valid token
-    return false;
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    return !!token;
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  private storeToken(token: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
+  private storeUser(user: any): void {
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+  }
+
+  getUser(): any {
+    const user = localStorage.getItem(this.USER_KEY);
+    return user ? JSON.parse(user) : null;
   }
 }
+
