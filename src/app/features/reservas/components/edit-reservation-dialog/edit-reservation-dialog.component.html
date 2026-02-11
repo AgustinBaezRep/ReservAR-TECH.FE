@@ -1,71 +1,67 @@
 <h2 mat-dialog-title>Editar Reserva</h2>
 <mat-dialog-content>
-  <form [formGroup]="form" class="edit-form">
-    <!-- Date Picker -->
-    <mat-form-field appearance="outline">
-      <mat-label>Fecha</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate" [max]="maxDate" />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-      <mat-error *ngIf="form.get('date')?.hasError('required')">
-        La fecha es requerida
-      </mat-error>
-    </mat-form-field>
+  <form [formGroup]="form" class="edit-form compact-form">
+    <div class="form-row">
+      <!-- Selector de Fecha -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Fecha</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate" [max]="maxDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
 
-    <!-- Court Dropdown -->
-    <mat-form-field appearance="outline">
+      <!-- Selector de Horario -->
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Horario</mat-label>
+        <mat-select formControlName="startTime">
+          <mat-option *ngFor="let slot of availableTimeSlots" [value]="slot.label" [disabled]="!slot.available">
+            {{ slot.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Selector de Cancha -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Cancha</mat-label>
       <mat-select formControlName="courtId">
         <mat-option *ngFor="let court of availableCourts" [value]="court.id">
-          {{ court.name }}
+          {{ court.name }} ({{ getCourtPrice(court, form.get('startTime')?.value) |
+          currency:'ARS':'symbol-narrow':'1.0-0' }})
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="form.get('courtId')?.hasError('required')">
-        Seleccione una cancha
-      </mat-error>
     </mat-form-field>
 
-    <!-- Time Slot Dropdown -->
-    <mat-form-field appearance="outline">
-      <mat-label>Horario</mat-label>
-      <mat-select formControlName="startTime">
-        <mat-option *ngFor="let slot of availableTimeSlots" [value]="slot.label" [disabled]="!slot.available">
-          {{ slot.label }} {{ !slot.available ? "(No disponible)" : "" }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="form.get('startTime')?.hasError('required')">
-        Seleccione un horario
-      </mat-error>
+    <!-- Precio (Solo lectura, más compacto) -->
+    <div class="price-badge">
+      Precio: {{ selectedCourtPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}
+    </div>
+
+    <!-- Nombre del Usuario (Full Width) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="userName" placeholder="Nombre" />
     </mat-form-field>
 
-    <!-- Price (Read-only) -->
-    <p class="price-display">
-      <strong>Precio:</strong> {{ selectedCourtPrice | currency }}
-    </p>
-
-    <!-- User Name -->
-    <mat-form-field appearance="outline">
-      <mat-label>Nombre del Usuario</mat-label>
-      <input matInput formControlName="userName" placeholder="Ingrese el nombre" />
-      <mat-error *ngIf="form.get('userName')?.hasError('required')">
-        El nombre es requerido
-      </mat-error>
+    <!-- Teléfono (Full Width, Mandatory) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="userContact" placeholder="11 1234 5678" />
+      <mat-error *ngIf="form.get('userContact')?.hasError('required')">Requerido</mat-error>
     </mat-form-field>
 
-    <!-- Contact Email -->
-    <mat-form-field appearance="outline">
-      <mat-label>Email de Contacto</mat-label>
-      <input matInput formControlName="userContact" placeholder="ejemplo@email.com" />
-      <mat-error *ngIf="form.get('userContact')?.hasError('required')">
-        El email es requerido
-      </mat-error>
-      <mat-error *ngIf="form.get('userContact')?.hasError('email')">
-        Ingrese un email válido
-      </mat-error>
+    <!-- Email (Full Width, Optional) -->
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Email (Opcional)</mat-label>
+      <input matInput formControlName="userEmail" placeholder="juan@email.com" />
+      <mat-error *ngIf="form.get('userEmail')?.hasError('email')">Email inválido</mat-error>
     </mat-form-field>
   </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+
+<mat-dialog-actions>
+  <button mat-flat-button color="warn" (click)="onDelete()">Eliminar</button>
+  <span class="spacer"></span>
   <button mat-button (click)="onCancel()">Cancelar</button>
   <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">
     Guardar

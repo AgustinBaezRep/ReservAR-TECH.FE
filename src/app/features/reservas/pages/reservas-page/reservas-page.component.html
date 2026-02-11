@@ -1,197 +1,38 @@
 <div class="reservas-container">
   <div class="header">
     <h1>Gestionar Reservas</h1>
-    <p class="subtitle">Selecciona la fecha, la cancha y el horario</p>
+    <p class="subtitle">Vista de disponibilidad por cancha y horario</p>
   </div>
 
-  <div class="wizard-container">
-    <div class="offline-message" *ngIf="!isComplexOnline">
-      <mat-icon>cloud_off</mat-icon>
-      <h2>Complejo Offline</h2>
-      <p>El complejo está actualmente fuera de línea. No se pueden crear nuevas reservas.</p>
-    </div>
-
-    <mat-stepper #stepper [linear]="true" *ngIf="isComplexOnline">
-
-      <mat-step [stepControl]="selectedDateControl" label="Date">
-        <div class="step-content date-step">
-          <div class="calendar-wrapper">
-            <div class="calendar-header">
-              <button mat-icon-button (click)="goToToday()">
-                <mat-icon>today</mat-icon>
-              </button>
-              <h3>{{ selectedDateControl.value | date:'MMMM yyyy' }}</h3>
-            </div>
-            <mat-calendar #picker [selected]="selectedDateControl.value" [minDate]="minDate" [maxDate]="maxDate"
-              (selectedChange)="onDateSelected($event)" (click)="onCalendarClick($event)">
-            </mat-calendar>
-          </div>
-        </div>
-      </mat-step>
-
-      <mat-step label="Court & Time" [completed]="!!selectedCourt && !!selectedTimeSlot">
-        <div class="step-content court-step">
-          <div class="step-header">
-            <button mat-button matStepperPrevious>
-              <mat-icon>arrow_back</mat-icon> Atrás
-            </button>
-            <h3>Seleccionar Cancha y Horario para {{ selectedDateControl.value | date:'fullDate' }}</h3>
-          </div>
-
-          <div class="courts-list">
-            <div class="court-card" *ngFor="let court of courts" [class.selected]="selectedCourt?.id === court.id"
-              (click)="selectCourt(court)">
-              <div class="court-info">
-                <div class="court-icon">
-                  <mat-icon>{{ getCourtIcon(court.type) }}</mat-icon>
-                </div>
-                <div class="court-details">
-                  <h4>{{ court.name }}</h4>
-                  <p class="court-meta">
-                    <span class="badge">{{ court.type || 'Standard' }}</span>
-                    <span class="features">
-                      <mat-icon inline>wifi</mat-icon> WiFi
-                      <mat-icon inline>shower</mat-icon> Showers
-                    </span>
-                    <span class="price">{{ court.price | currency }}</span>
-                  </p>
-                </div>
-              </div>
-
-              <div class="time-slots" *ngIf="selectedCourt?.id === court.id" (click)="$event.stopPropagation()">
-                <h5>Horarios Disponibles</h5>
-                <div class="slots-grid">
-                  <button mat-stroked-button *ngFor="let slot of timeSlots" [disabled]="!isSlotAvailable(court, slot)"
-                    [class.active]="selectedTimeSlot?.label === slot.label" (click)="selectTimeSlot(slot)">
-                    {{ slot.label }}
-                  </button>
-                </div>
-                <div class="step-actions" *ngIf="selectedTimeSlot">
-                  <button mat-raised-button color="primary" matStepperNext>
-                    Continuar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </mat-step>
-
-      <mat-step [stepControl]="bookingForm" label="Details">
-        <div class="step-content details-step">
-          <div class="step-header">
-            <button mat-button matStepperPrevious>
-              <mat-icon>arrow_back</mat-icon> Atrás
-            </button>
-            <h3>Detalles de la Reserva</h3>
-          </div>
-
-          <div class="booking-summary" *ngIf="selectedCourt && selectedTimeSlot">
-            <div class="summary-item">
-              <mat-icon>calendar_today</mat-icon>
-              <span>{{ selectedDateControl.value | date:'fullDate' }}</span>
-            </div>
-            <div class="summary-item">
-              <mat-icon>schedule</mat-icon>
-              <span>{{ selectedTimeSlot.label }}</span>
-            </div>
-            <div class="summary-item">
-              <mat-icon>stadium</mat-icon>
-              <span>{{ selectedCourt.name }}</span>
-            </div>
-            <div class="summary-item">
-              <mat-icon>attach_money</mat-icon>
-              <span>{{ selectedCourt.price | currency }}</span>
-            </div>
-          </div>
-
-          <form [formGroup]="bookingForm" (ngSubmit)="onSubmitBooking()" class="booking-form">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Nombre</mat-label>
-                <input matInput formControlName="userName" placeholder="John Doe">
-                <mat-error *ngIf="bookingForm.get('userName')?.hasError('required')">
-                  Nombre es requerido
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Contacto (Email/Telefono)</mat-label>
-                <input matInput formControlName="userContact" placeholder="john@example.com">
-                <mat-error *ngIf="bookingForm.get('userContact')?.hasError('required')">
-                  Contacto es requerido
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Notas Adicionales</mat-label>
-                <textarea matInput formControlName="notes" rows="3"></textarea>
-              </mat-form-field>
-            </div>
-
-            <div class="form-actions">
-              <button mat-button type="button" (click)="resetWizard()">Cancelar</button>
-              <button mat-raised-button color="primary" type="submit" [disabled]="bookingForm.invalid">
-                Confirmar Reserva
-              </button>
-            </div>
-          </form>
-        </div>
-      </mat-step>
-    </mat-stepper>
+  <div class="offline-message" *ngIf="!isComplexOnline">
+    <mat-icon>cloud_off</mat-icon>
+    <h2>Complejo Offline</h2>
+    <p>El complejo está actualmente fuera de línea. No se pueden crear nuevas reservas.</p>
   </div>
 
-  <div class="table-container">
-    <h2>Reservas Realizadas</h2>
-
-    <!-- Filters Section -->
-    <div class="filters-container" [formGroup]="filterForm">
-      <mat-form-field appearance="outline" class="filter-item">
-        <mat-label>Fecha</mat-label>
-        <input matInput [matDatepicker]="filterPicker" formControlName="date">
-        <mat-datepicker-toggle matSuffix [for]="filterPicker"></mat-datepicker-toggle>
-        <mat-datepicker #filterPicker></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="filter-item">
-        <mat-label>Cancha</mat-label>
-        <mat-select formControlName="courtId">
-          <mat-option value="">Todas</mat-option>
-          <mat-option *ngFor="let court of courts" [value]="court.id">
-            {{ court.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="filter-item">
-        <mat-label>Hora</mat-label>
-        <input matInput formControlName="time" placeholder="Ej: 10:00">
-        <mat-icon matSuffix>schedule</mat-icon>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="filter-item">
-        <mat-label>Usuario</mat-label>
-        <input matInput formControlName="user" placeholder="Nombre usuario">
-        <mat-icon matSuffix>person</mat-icon>
-      </mat-form-field>
-
-      <button mat-stroked-button color="primary" (click)="resetFilters()">
-        <mat-icon>filter_alt_off</mat-icon>
-        Limpiar
+  <!-- Navegador de fecha + Grilla -->
+  <div class="schedule-section" *ngIf="isComplexOnline">
+    <!-- Barra de navegación de fecha -->
+    <div class="date-navigator">
+      <button mat-stroked-button class="today-btn" (click)="goToToday()">Hoy</button>
+      <button mat-icon-button (click)="prevDay()">
+        <mat-icon>chevron_left</mat-icon>
       </button>
+      <button mat-icon-button (click)="nextDay()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <mat-icon class="date-icon">calendar_today</mat-icon>
+      <span class="current-date">{{ selectedDate | date:'EEEE d \'de\' MMMM' }}</span>
     </div>
 
-    <app-reservations-table [reservations]="filteredReservations" (editReservation)="onEditReservation($event)"
-      (cancelReservation)="onCancelReservation($event)">
-    </app-reservations-table>
+    <!-- Grilla de horarios -->
+    <app-schedule-grid [courts]="courts" [timeSlots]="timeSlots" [reservations]="dayReservations"
+      (slotClicked)="onSlotClicked($event)" (reservationClicked)="onReservationClicked($event)">
+    </app-schedule-grid>
   </div>
 </div>
 
-<!-- Custom Toast Container -->
+<!-- Toast Container para deshacer -->
 <div class="toast-container">
   <div class="toast" *ngFor="let toast of toasts">
     <span class="toast-message">{{ toast.message }}</span>

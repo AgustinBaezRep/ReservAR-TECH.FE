@@ -72,17 +72,17 @@ export class CreateUserComponent implements OnInit, OnDestroy {
                 next: (response) => {
                     this.isLoading = false;
                     if (response.success) {
-                        this.successMessage = response.message || 'User created successfully';
+                        this.successMessage = response.message || 'Usuario creado exitosamente';
                         this.userForm.reset({
                             role: UserRole.CLIENT
                         });
                     } else {
-                        this.errorMessage = response.message || 'Failed to create user';
+                        this.errorMessage = response.message || 'Error al crear usuario';
                     }
                 },
                 error: (error) => {
                     this.isLoading = false;
-                    this.errorMessage = 'An error occurred while creating the user';
+                    this.errorMessage = 'Ocurrió un error al crear el usuario';
                     console.error('Create user error:', error);
                 }
             });

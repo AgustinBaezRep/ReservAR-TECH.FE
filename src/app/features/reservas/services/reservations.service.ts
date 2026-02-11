@@ -20,12 +20,13 @@ export class ReservationsService {
       {
         id: '1',
         courtId: '1',
-        courtName: 'Court 1',
+        courtName: 'Cancha 1',
         date: today,
         startTime: '10:00',
         endTime: '11:00',
         userName: 'Juan Pérez',
-        userContact: 'JuanPérez@gmail.com',
+        userContact: '11 5555-1234',
+        userEmail: 'JuanPerez@gmail.com',
         status: ReservationStatus.Confirmed,
         price: 5000,
         createdAt: new Date(),
@@ -34,12 +35,13 @@ export class ReservationsService {
       {
         id: '2',
         courtId: '2',
-        courtName: 'Court 2',
+        courtName: 'Cancha 2',
         date: today,
         startTime: '14:00',
-        endTime: '16:00',
+        endTime: '15:30',
         userName: 'María García',
-        userContact: 'MaríaGarcía@gmail.com',
+        userContact: '11 5555-5678',
+        userEmail: 'MariaGarcia@gmail.com',
         status: ReservationStatus.Confirmed,
         price: 10000,
         createdAt: new Date(),
@@ -48,12 +50,13 @@ export class ReservationsService {
       {
         id: '3',
         courtId: '3',
-        courtName: 'Court 3',
+        courtName: 'Cancha 3',
         date: today,
         startTime: '18:00',
         endTime: '19:00',
         userName: 'Carlos López',
-        userContact: 'CarlosLópez@gmail.com',
+        userContact: '11 5555-9012',
+        userEmail: 'CarlosLopez@gmail.com',
         status: ReservationStatus.Confirmed,
         price: 6000,
         createdAt: new Date(),
@@ -96,10 +99,10 @@ export class ReservationsService {
     const currentReservations = this.reservationsSubject.value;
     this.reservationsSubject.next([...currentReservations, newReservation]);
 
-    // Register in Caja
+    // Registrar en Caja
     this.cajaService.registerReservationMovement(newReservation, 'create');
 
-    return of(newReservation).pipe(delay(1000));
+    return of(newReservation).pipe(delay(200));
   }
 
   updateReservation(id: string, updates: Partial<Reservation>): Observable<Reservation> {
@@ -107,7 +110,7 @@ export class ReservationsService {
     const index = currentReservations.findIndex(r => r.id === id);
 
     if (index === -1) {
-      throw new Error('Reservation not found');
+      throw new Error('Reserva no encontrada');
     }
 
     const originalReservation = currentReservations[index];
@@ -123,12 +126,12 @@ export class ReservationsService {
     newReservations[index] = updatedReservation;
     this.reservationsSubject.next(newReservations);
 
-    // Register price change in Caja (if price changed)
+    // Registrar cambio de precio en Caja (si el precio cambió)
     if (updates.price !== undefined && updates.price !== previousPrice) {
       this.cajaService.registerReservationMovement(updatedReservation, 'update', previousPrice);
     }
 
-    return of(updatedReservation).pipe(delay(1000));
+    return of(updatedReservation).pipe(delay(200));
   }
 
   cancelReservation(id: string): Observable<void> {
@@ -136,7 +139,7 @@ export class ReservationsService {
     const reservation = currentReservations.find(r => r.id === id);
 
     if (reservation) {
-      // Register cancellation in Caja
+      // Registrar cancelación en Caja
       this.cajaService.registerReservationMovement(reservation, 'cancel');
     }
 
@@ -150,7 +153,7 @@ export class ReservationsService {
     const reservation = currentReservations.find(r => r.id === id);
 
     if (reservation) {
-      // Register restoration as new reservation in Caja
+      // Registrar restauración como nueva reserva en Caja
       this.cajaService.registerReservationMovement(reservation, 'create');
     }
 
@@ -163,14 +166,14 @@ export class ReservationsService {
     const currentReservations = this.reservationsSubject.value;
     const reservation = currentReservations.find(r => r.id === id);
 
-    // Register deletion as cancellation in Caja (if not already cancelled)
+    // Registrar eliminación como cancelación en Caja (si no estaba ya cancelada)
     if (reservation && reservation.status !== ReservationStatus.Cancelled) {
       this.cajaService.registerReservationMovement(reservation, 'cancel');
     }
 
     const filtered = currentReservations.filter(r => r.id !== id);
     this.reservationsSubject.next(filtered);
-    return of(void 0).pipe(delay(1000));
+    return of(void 0).pipe(delay(200));
   }
 }
 

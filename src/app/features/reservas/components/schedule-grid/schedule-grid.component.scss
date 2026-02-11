@@ -1,0 +1,185 @@
+.schedule-wrapper {
+    display: flex;
+    background: white;
+    border-radius: 12px;
+    overflow-x: auto;
+    /* Allow horizontal scroll if many courts */
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    position: relative;
+    /* Ensure it has height or min-height */
+    min-height: 600px;
+}
+
+/* Time Column */
+.time-column {
+    flex: 0 0 70px;
+    /* Fixed width */
+    border-right: 1px solid #e2e8f0;
+    background: #fafbfc;
+    position: sticky;
+    left: 0;
+    z-index: 20;
+    /* Higher than reservations */
+}
+
+.header-spacer {
+    height: 60px;
+    /* Match court header height */
+    border-bottom: 2px solid #e2e8f0;
+    background: #fafbfc;
+}
+
+.time-label-cell {
+    height: 40px;
+    /* Base slot height */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+    border-bottom: 1px solid #f1f5f9;
+    padding-top: 4px;
+    /* Align text slightly down */
+}
+
+
+/* Courts Container */
+.courts-container {
+    display: flex;
+    /* Prevent shrinking so wrapper scrolls comfortably */
+    flex: 1 0 auto;
+    /* Or simply don't set width, let flex expand */
+}
+
+.court-column {
+    /* Grow and shrink but respect min-width. 
+     Using flex-basis: 180px ensures good starting size */
+    flex: 1 0 180px;
+    min-width: 180px;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* Context for children */
+
+    &:last-child {
+        border-right: none;
+    }
+}
+
+.court-header {
+    height: 60px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #e2e8f0;
+    background: #f8fafc;
+    /* Make header sticky vertically */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    .court-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: #475569;
+        margin-bottom: 2px;
+    }
+
+    .court-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.2;
+    }
+
+    .court-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e293b;
+        white-space: nowrap;
+    }
+
+    .court-type {
+        font-size: 0.7rem;
+        color: #94a3b8;
+    }
+}
+
+.court-grid {
+    display: grid;
+    /* rows are set dynamically in inline style */
+    position: relative;
+    /* Ensure grid fills the column height */
+    flex: 1;
+}
+
+.grid-slot {
+    height: 40px;
+    /* Must match time-label-cell height */
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background-color 0.1s;
+
+    &:hover {
+        background-color: #f0fdf4;
+        /* Light green hover */
+    }
+}
+
+.reservation-item {
+    position: absolute;
+    /* Occupy full width */
+    left: 2px;
+    right: 2px;
+    /* Occupy full height minus minimal gap */
+    top: 1px;
+    bottom: 1px;
+
+    border-left: 4px solid;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+        z-index: 10;
+        /* Remove scaling that blocks neighbors */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .reservation-content {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+
+        .res-time {
+            font-weight: 500;
+            margin-bottom: 2px;
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .res-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .res-price {
+            font-size: 0.7em;
+            opacity: 0.8;
+        }
+    }
+}

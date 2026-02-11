@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Nueva Reserva</h2>
+<mat-dialog-content>
+    <!-- Resumen Compacto -->
+    <div class="mini-summary">
+        <div class="summary-top">
+            <span class="court-name">{{ data.court.name }} <span class="court-type">({{ data.court.type || 'Estándar'
+                    }})</span></span>
+            <span class="time-range">{{ data.timeSlot.label }} - {{ getEndTime() }}</span>
+        </div>
+        <div class="summary-bottom">
+            <span class="date">{{ data.date | date:'EEE, dd MMM yyyy' | titlecase }}</span>
+            <span class="price">{{ data.price | currency:'ARS':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+    </div>
+
+    <!-- Formulario Compacto -->
+    <form [formGroup]="form" class="create-form compact-form">
+        <!-- Stacked fields for better visibility -->
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="userName" placeholder="Juan Pérez" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="userContact" placeholder="11 1234 5678" />
+            <mat-error *ngIf="form.get('userContact')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Email (Opcional)</mat-label>
+            <input matInput formControlName="userEmail" placeholder="juan@email.com" />
+            <mat-error *ngIf="form.get('userEmail')?.hasError('email')">Email inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Notas</mat-label>
+            <input matInput formControlName="notes" placeholder="Opcional" />
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onConfirm()" [disabled]="form.invalid">
+        Confirmar
+    </button>
+</mat-dialog-actions>

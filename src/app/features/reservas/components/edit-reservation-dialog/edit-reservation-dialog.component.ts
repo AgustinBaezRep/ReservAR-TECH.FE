@@ -49,15 +49,15 @@ interface AvailableTimeSlot extends TimeSlot {
 export class EditReservationDialogComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
-  // Date constraints
+  // Restricciones de fecha
   minDate: Date = new Date();
   maxDate: Date = new Date();
 
-  // Available options
+  // Opciones disponibles
   availableCourts: Court[] = [];
   availableTimeSlots: AvailableTimeSlot[] = [];
 
-  // Selected court price for display
+  // Precio de cancha seleccionada para mostrar
   selectedCourtPrice: number = 0;
 
   private destroy$ = new Subject<void>();
@@ -67,41 +67,42 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<EditReservationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditReservationDialogData
   ) {
-    // Set date constraints (today + 6 days)
+    // Establecer restricciones de fecha (hoy + 6 días)
     this.maxDate.setDate(this.minDate.getDate() + 6);
 
-    // Parse the reservation date
+    // Parsear la fecha de la reserva
     const reservationDate = new Date(this.data.reservation.date + 'T00:00:00');
 
-    // Initialize form with current reservation values
+    // Inicializar formulario con valores actuales de la reserva
     this.form = this.fb.group({
       date: [reservationDate, [Validators.required]],
       courtId: [this.data.reservation.courtId, [Validators.required]],
       startTime: [this.data.reservation.startTime, [Validators.required]],
       userName: [this.data.reservation.userName, [Validators.required]],
-      userContact: [this.data.reservation.userContact, [Validators.required, Validators.email]]
+      userContact: [this.data.reservation.userContact, [Validators.required]],
+      userEmail: [this.data.reservation.userEmail, [Validators.email]]
     });
 
-    // Initialize price
+    // Inicializar precio
     this.selectedCourtPrice = this.data.reservation.price;
   }
 
   ngOnInit(): void {
-    // Initialize available courts (active only)
+    // Inicializar canchas disponibles (solo activas)
     this.availableCourts = this.data.courts.filter(c => c.isActive);
 
-    // Recalculate initial price based on court pricing configuration
+    // Recalcular precio inicial basado en configuración de precios de la cancha
     const currentCourt = this.availableCourts.find(c => c.id === this.data.reservation.courtId);
     const currentStartTime = this.data.reservation.startTime;
     this.selectedCourtPrice = this.getCourtPrice(currentCourt, currentStartTime);
 
-    // Generate initial time slots
+    // Generar horarios iniciales
     this.generateTimeSlots();
 
-    // Subscribe to date changes
+    // Suscribirse a cambios de fecha
     this.form.get('date')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.generateTimeSlots();
-      // Reset time slot when date changes
+      // Reiniciar horario cuando cambia la fecha
       const currentStartTime = this.form.get('startTime')?.value;
       const stillAvailable = this.availableTimeSlots.find(s => s.label === currentStartTime && s.available);
       if (!stillAvailable) {
@@ -109,17 +110,17 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Subscribe to court changes
+    // Suscribirse a cambios de cancha
     this.form.get('courtId')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((courtId) => {
-      // Update price display
+      // Actualizar precio mostrado
       const court = this.availableCourts.find(c => c.id === courtId);
       const startTime = this.form.get('startTime')?.value;
       this.selectedCourtPrice = this.getCourtPrice(court, startTime);
 
-      // Regenerate time slots for new court
+      // Regenerar horarios para la nueva cancha
       this.generateTimeSlots();
 
-      // Reset time slot when court changes
+      // Reiniciar horario cuando cambia la cancha
       const currentStartTime = this.form.get('startTime')?.value;
       const stillAvailable = this.availableTimeSlots.find(s => s.label === currentStartTime && s.available);
       if (!stillAvailable) {
@@ -127,7 +128,7 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Subscribe to start time changes to update price
+    // Suscribirse a cambios de horario para actualizar precio
     this.form.get('startTime')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((startTime) => {
       const courtId = this.form.get('courtId')?.value;
       const court = this.availableCourts.find(c => c.id === courtId);
@@ -146,20 +147,21 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
     const selectedDate = this.form.get('date')?.value;
     if (!selectedDate) return;
 
-    // Get day of week (0=Mon, 6=Sun for our array)
+    // Obtener día de la semana (0=Lun, 6=Dom para nuestro array)
     let dayIndex = selectedDate.getDay() - 1;
-    if (dayIndex === -1) dayIndex = 6; // Sunday
+    if (dayIndex === -1) dayIndex = 6; // Domingo
 
     const operatingHours = this.data.operatingHours?.days[dayIndex];
 
     if (operatingHours && operatingHours.isOpen && operatingHours.openTime && operatingHours.closeTime) {
-      const [startHour] = operatingHours.openTime.split(':').map(Number);
-      const [endHour] = operatingHours.closeTime.split(':').map(Number);
+      const [startHour, startMinuteVal] = operatingHours.openTime.split(':').map(Number);
+      const [endHour, endMinuteVal] = operatingHours.closeTime.split(':').map(Number);
 
       let currentHour = startHour;
+      let currentMinute = startMinuteVal || 0;
 
-      while (currentHour < endHour) {
-        const label = `${currentHour.toString().padStart(2, '0')}:00`;
+      while (currentHour < endHour || (currentHour === endHour && currentMinute < (endMinuteVal || 0))) {
+        const label = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
         const isAvailable = this.isSlotAvailable(label);
 
         this.availableTimeSlots.push({
@@ -167,7 +169,12 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
           label: label,
           available: isAvailable
         });
-        currentHour++;
+
+        currentMinute += 30;
+        if (currentMinute >= 60) {
+          currentHour++;
+          currentMinute = 0;
+        }
       }
     }
   }
@@ -179,17 +186,45 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
     if (!selectedDate || !selectedCourtId) return true;
 
     const dateStr = this.formatDateToISO(selectedDate);
+    const court = this.availableCourts.find(c => c.id === selectedCourtId);
 
-    // Check if slot is already reserved by another reservation
-    const isReserved = this.data.allReservations.some(r =>
-      r.id !== this.data.reservation.id && // Exclude current reservation
-      r.courtId === selectedCourtId &&
-      r.date === dateStr &&
-      r.startTime === slotLabel &&
-      r.status !== ReservationStatus.Cancelled
-    );
+    // Determine duration of POTENTIAL new reservation
+    const isPadel = court?.type?.toLowerCase().includes('padel');
+    const newDurationInfo = isPadel ? 90 : 60;
 
-    return !isReserved;
+    const newStartMinutes = this.parseTimeToMinutes(slotLabel);
+    const newEndMinutes = newStartMinutes + newDurationInfo;
+
+    // Verificar si el slot choca con INTERVALOS de otras reservas
+    const hasOverlap = this.data.allReservations.some(r => {
+      // Excluir misma reserva (comparación segura)
+      if (String(r.id) === String(this.data.reservation.id)) return false;
+
+      // Excluir otra fecha/cancha/cancelada
+      if (String(r.courtId) !== String(selectedCourtId)) return false;
+      if (r.date !== dateStr) return false;
+      if (r.status === ReservationStatus.Cancelled) return false;
+
+      const rStartMinutes = this.parseTimeToMinutes(r.startTime);
+      // Confiar en endTime de la reserva, o calcular si es necesario (asumo endTime existe)
+      let rEndMinutes = this.parseTimeToMinutes(r.endTime);
+
+      // Fallback si endTime es inválido o igual a start (data corrupta)
+      if (rEndMinutes <= rStartMinutes) {
+        rEndMinutes = rStartMinutes + 60;
+      }
+
+      // Overlap logic: StartA < EndB && EndA > StartB
+      return (newStartMinutes < rEndMinutes) && (newEndMinutes > rStartMinutes);
+    });
+
+    return !hasOverlap;
+  }
+
+  private parseTimeToMinutes(time: string): number {
+    if (!time) return 0;
+    const [h, m] = time.split(':').map(Number);
+    return h * 60 + m;
   }
 
   private formatDateToISO(date: Date): string {
@@ -200,45 +235,45 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get the price for a court based on its pricing configuration.
-   * Uses single price if configured, otherwise finds the applicable interval.
-   * Falls back to court.price if no pricing is configured.
-   * Public method to allow usage in templates.
+   * Obtener el precio de una cancha basado en su configuración de precios.
+   * Usa precio único si está configurado, de lo contrario busca el intervalo aplicable.
+   * Si no hay precios configurados, usa court.price como respaldo.
+   * Método público para permitir uso en templates.
    */
   getCourtPrice(court: Court | undefined, startTime: string): number {
     if (!court) return 0;
 
     const pricing = court.pricing;
 
-    // If no pricing configured, use base court price
+    // Si no hay precios configurados, usar precio base de la cancha
     if (!pricing) {
       return court.price;
     }
 
-    // If single price mode, use single price
+    // Si es modo precio único, usar precio único
     if (pricing.isSinglePrice && pricing.singlePrice != null) {
       return pricing.singlePrice;
     }
 
-    // If interval mode, find the applicable interval
+    // Si es modo intervalos, buscar el intervalo aplicable
     if (pricing.intervals && pricing.intervals.length > 0 && startTime) {
-      // Sort intervals by endTime
+      // Ordenar intervalos por endTime
       const sortedIntervals = [...pricing.intervals].sort((a, b) =>
         a.endTime.localeCompare(b.endTime)
       );
 
-      // Find the first interval where startTime < endTime
+      // Encontrar el primer intervalo donde startTime < endTime
       for (const interval of sortedIntervals) {
         if (startTime < interval.endTime) {
           return interval.price;
         }
       }
 
-      // If startTime is after all intervals, use the last interval's price
+      // Si startTime es después de todos los intervalos, usar el precio del último intervalo
       return sortedIntervals[sortedIntervals.length - 1].price;
     }
 
-    // Fallback to base court price
+    // Respaldo al precio base de la cancha
     return court.price;
   }
 
@@ -246,15 +281,26 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
+  onDelete(): void {
+    this.dialogRef.close({ action: 'delete' });
+  }
+
   onSave(): void {
     if (this.form.valid) {
       const formValue = this.form.value;
       const selectedCourt = this.availableCourts.find(c => c.id === formValue.courtId);
 
-      // Calculate end time (1 hour duration)
+      // Calcular duración basada en el tipo de deporte
+      // Padel: 1.5 horas (90 min), Fútbol/Otros: 1 hora (60 min)
+      const isPadel = selectedCourt?.type?.toLowerCase().includes('padel');
+      const durationMinutes = isPadel ? 90 : 60;
+
       const [hours, minutes] = formValue.startTime.split(':').map(Number);
-      const endHour = hours + 1;
-      const endTime = `${endHour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      const startDate = new Date();
+      startDate.setHours(hours, minutes + durationMinutes);
+      const endHour = startDate.getHours().toString().padStart(2, '0');
+      const endMinute = startDate.getMinutes().toString().padStart(2, '0');
+      const endTime = `${endHour}:${endMinute}`;
 
       const updates: Partial<Reservation> = {
         date: this.formatDateToISO(formValue.date),
@@ -264,10 +310,11 @@ export class EditReservationDialogComponent implements OnInit, OnDestroy {
         endTime: endTime,
         userName: formValue.userName,
         userContact: formValue.userContact,
+        userEmail: formValue.userEmail,
         price: this.getCourtPrice(selectedCourt, formValue.startTime)
       };
 
-      this.dialogRef.close(updates);
+      this.dialogRef.close({ action: 'update', data: updates });
     }
   }
 }

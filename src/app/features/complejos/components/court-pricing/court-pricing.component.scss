@@ -21,41 +21,119 @@
     width: 100%;
 }
 
+.info-box {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+
+    mat-icon {
+        color: #1976d2;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    div {
+        flex: 1;
+
+        strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0d47a1;
+            font-size: 14px;
+        }
+
+        p {
+            margin: 0 0 8px;
+            color: #0d47a1;
+            font-size: 13px;
+            line-height: 1.4;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
 .interval-form {
     display: flex;
     gap: 16px;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 16px;
     flex-wrap: wrap;
+    background-color: #fafafa;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.start-time-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 80px;
+    padding: 0 12px;
+
+    .label {
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.6);
+        margin-bottom: 4px;
+    }
+
+    .value {
+        font-size: 16px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.87);
+    }
 }
 
 .time-field {
     flex: 1;
-    min-width: 150px;
+    min-width: 120px;
 }
 
 .price-field {
     flex: 1;
-    min-width: 150px;
+    min-width: 120px;
 }
 
 .intervals-table {
     width: 100%;
     margin-top: 16px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    overflow: hidden;
 
     th,
     td {
         padding: 12px 16px;
+        text-align: left;
     }
 
     th {
         font-weight: 500;
         color: rgba(0, 0, 0, 0.6);
-        background-color: #fafafa;
+        background-color: #f5f5f5;
+        font-size: 13px;
+        border-bottom: 1px solid #eee;
+    }
+
+    td {
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
     }
 
     tr:hover {
-        background-color: #f5f5f5;
+        background-color: #fafafa;
     }
 }
 

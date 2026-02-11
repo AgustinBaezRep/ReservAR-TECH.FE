@@ -109,8 +109,8 @@ export class CourtManagerComponent implements OnInit, OnDestroy {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '400px',
         data: {
-          title: 'Deactivate Court',
-          message: `Are you sure you want to deactivate ${court.name}?`,
+          title: 'Desactivar Cancha',
+          message: `¿Está seguro de que desea desactivar ${court.name}?`,
           confirmText: 'Desactivar'
         }
       });
@@ -146,8 +146,8 @@ export class CourtManagerComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Court',
-        message: `Are you sure you want to delete ${court.name}?`
+        title: 'Eliminar Cancha',
+        message: `¿Está seguro de que desea eliminar ${court.name}?`
       }
     });
 
