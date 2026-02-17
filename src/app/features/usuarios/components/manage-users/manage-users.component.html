@@ -1,8 +1,8 @@
 <div class="manage-users-section">
-    <h2 class="section-title">Manage Users</h2>
+    <h2 class="section-title">Administrar Usuarios</h2>
 
     <div class="filter-section">
-        <input type="text" class="filter-input" placeholder="Filter by email" [(ngModel)]="filterEmail"
+        <input type="text" class="filter-input" placeholder="Filtrar por correo" [(ngModel)]="filterEmail"
             (ngModelChange)="applyFilter()">
     </div>
 
@@ -10,11 +10,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Date of Birth</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,20 +22,20 @@
                 <tr>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.createdAt | date:'MMMM d, yyyy' }}</td>
-                    <td>{{ user.role === 'ADMIN' ? 'admin' : 'customer' }}</td>
+                    <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ user.role === 'ADMIN' ? 'Administrador' : 'Cliente' }}</td>
                     <td class="actions-cell">
-                        <button class="action-btn" (click)="onEdit(user)" title="Edit">
+                        <button class="action-btn" (click)="onEdit(user)" title="Editar">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button class="action-btn delete" (click)="onDelete(user)" title="Delete">
+                        <button class="action-btn delete" (click)="onDelete(user)" title="Eliminar">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </td>
                 </tr>
                 } @empty {
                 <tr>
-                    <td colspan="5" class="empty-message">No users found</td>
+                    <td colspan="5" class="empty-message">No se encontraron usuarios</td>
                 </tr>
                 }
             </tbody>

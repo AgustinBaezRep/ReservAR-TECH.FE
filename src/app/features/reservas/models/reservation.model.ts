@@ -1,7 +1,7 @@
 import { ReservationStatus } from './reservation-status.enum';
 
 export interface PriceInterval {
-  endTime: string;  // HH:mm format
+  endTime: string;  // Formato HH:mm
   price: number;
 }
 
@@ -31,11 +31,12 @@ export interface Reservation {
   id: string;
   courtId: string;
   courtName: string;
-  date: string; // ISO date string (YYYY-MM-DD)
-  startTime: string; // HH:mm format
-  endTime: string; // HH:mm format
+  date: string; // Fecha ISO (YYYY-MM-DD)
+  startTime: string; // Formato HH:mm
+  endTime: string; // Formato HH:mm
   userName: string;
-  userContact: string;
+  userContact: string; // Used for Phone
+  userEmail?: string;
   status: ReservationStatus;
   price: number;
   createdAt?: Date;

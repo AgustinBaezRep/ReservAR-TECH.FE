@@ -1,14 +1,14 @@
-<h2 mat-dialog-title>Edit Court Details</h2>
+<h2 mat-dialog-title>Editar Detalles de la Cancha</h2>
 <mat-dialog-content>
   <form [formGroup]="courtForm" class="court-form">
     <div class="form-row">
       <mat-form-field appearance="outline">
-        <mat-label>Court Name</mat-label>
-        <input matInput formControlName="name" placeholder="Enter court name">
+        <mat-label>Nombre de la Cancha</mat-label>
+        <input matInput formControlName="name" placeholder="Ingrese el nombre de la cancha">
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Sport</mat-label>
+        <mat-label>Deporte</mat-label>
         <mat-select formControlName="type">
           <mat-option *ngFor="let sport of sportTypes" [value]="sport">
             {{sport}}
@@ -19,7 +19,7 @@
 
     <div class="form-row">
       <mat-form-field appearance="outline">
-        <mat-label>Floor Type</mat-label>
+        <mat-label>Tipo de Piso</mat-label>
         <mat-select formControlName="floorType">
           <mat-option *ngFor="let floor of floorTypes" [value]="floor">
             {{floor}}
@@ -28,23 +28,23 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Price per Hour</mat-label>
+        <mat-label>Precio por Hora</mat-label>
         <input matInput type="number" formControlName="price" placeholder="0.00">
         <span matTextPrefix>$&nbsp;</span>
-        <mat-error *ngIf="courtForm.get('price')?.hasError('min')">Price must be greater than 0</mat-error>
+        <mat-error *ngIf="courtForm.get('price')?.hasError('min')">El precio debe ser mayor a 0</mat-error>
       </mat-form-field>
     </div>
 
     <div class="attributes-section">
-      <span class="attributes-label">Attributes:</span>
+      <span class="attributes-label">Atributos:</span>
       <div class="checkbox-group">
-        <mat-checkbox formControlName="hasRoof">Roof</mat-checkbox>
-        <mat-checkbox formControlName="hasLighting">Lighting</mat-checkbox>
+        <mat-checkbox formControlName="hasRoof">Techo</mat-checkbox>
+        <mat-checkbox formControlName="hasLighting">Iluminación</mat-checkbox>
       </div>
     </div>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!courtForm.valid">Save Changes</button>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!courtForm.valid">Guardar Cambios</button>
 </mat-dialog-actions>

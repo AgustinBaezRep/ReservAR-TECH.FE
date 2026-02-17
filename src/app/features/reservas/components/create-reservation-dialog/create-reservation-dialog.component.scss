@@ -1,0 +1,100 @@
+.create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 10px;
+}
+
+.mini-summary {
+    background: #f8fafc;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.summary-top,
+.summary-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.summary-bottom {
+    margin-bottom: 0px;
+}
+
+.court-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.court-type {
+    font-weight: 400;
+    color: #64748b;
+    font-size: 0.85em;
+}
+
+.time-range {
+    font-weight: 600;
+    color: #0ea5e9;
+}
+
+.date {
+    color: #64748b;
+    font-size: 0.9em;
+}
+
+.price {
+    font-weight: 700;
+    color: #166534;
+}
+
+.compact-form {
+
+    /* Override default material density */
+    mat-form-field {
+        width: 100%;
+        margin-bottom: 0px;
+    }
+
+    ::ng-deep .mat-mdc-form-field-flex {
+        padding-top: 0 !important;
+        align-items: center !important;
+    }
+
+    ::ng-deep .mat-mdc-text-field-wrapper {
+        padding-top: 8px;
+        padding-bottom: 8px;
+        height: 48px;
+        /* Force smaller height */
+    }
+
+    ::ng-deep .mat-mdc-form-field-infix {
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+        min-height: unset !important;
+    }
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+
+    mat-form-field {
+        flex: 1;
+    }
+}
+
+mat-dialog-content {
+    padding-bottom: 0 !important;
+    max-width: 450px !important;
+    overflow-y: hidden;
+    /* Shouldn't need scroll for compact form */
+}
+
+mat-dialog-actions {
+    padding: 12px 24px;
+}

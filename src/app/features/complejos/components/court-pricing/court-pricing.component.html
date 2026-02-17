@@ -1,15 +1,15 @@
 <mat-card class="pricing-card">
     <mat-card-header>
-        <mat-card-title>Court Pricing</mat-card-title>
+        <mat-card-title>Precios de Canchas</mat-card-title>
     </mat-card-header>
 
     <mat-card-content class="card-content">
         <form [formGroup]="pricingForm">
             <!-- Court Selection -->
             <div class="form-section">
-                <label class="section-label">Select Court</label>
+                <label class="section-label">Seleccionar Cancha</label>
                 <mat-form-field appearance="outline" class="full-width">
-                    <mat-select formControlName="courtId" placeholder="Select a court">
+                    <mat-select formControlName="courtId" placeholder="Seleccione una cancha">
                         <mat-option *ngFor="let court of courts" [value]="court.id">
                             {{ court.name }}
                         </mat-option>
@@ -26,53 +26,78 @@
                         precio.</span>
                 </div>
 
-                <mat-checkbox formControlName="isSinglePrice" [disabled]="hasActiveReservations">Single
-                    price</mat-checkbox>
+                <mat-checkbox formControlName="isSinglePrice" [disabled]="hasActiveReservations">Precio
+                    único</mat-checkbox>
             </div>
 
             <!-- Single Price Input (shown when isSinglePrice is true) -->
             <div class="form-section" *ngIf="selectedCourt && isSinglePrice">
-                <label class="section-label">Single Price</label>
+                <label class="section-label">Precio Único</label>
                 <mat-form-field appearance="outline" class="full-width">
-                    <input matInput type="number" formControlName="singlePrice" placeholder="Enter price">
+                    <input matInput type="number" formControlName="singlePrice" placeholder="Ingrese el precio">
                 </mat-form-field>
             </div>
 
             <!-- Price Intervals (shown when isSinglePrice is false) -->
             <div class="form-section" *ngIf="selectedCourt && !isSinglePrice">
-                <label class="section-label">Price Intervals</label>
+                <label class="section-label">Intervalos de Precios</label>
+
+                <!-- Toolkit / Explanation -->
+                <div class="info-box">
+                    <mat-icon color="primary">info</mat-icon>
+                    <div>
+                        <strong>¿Cómo funcionan los intervalos?</strong>
+                        <p>Los intervalos son secuenciales. Cada nuevo intervalo comienza automáticamente donde terminó
+                            el anterior (o a las 00:00 para el primero).</p>
+                        <p>Ejemplo: Si agregas un intervalo hasta las 12:00, el siguiente comenzará automáticamente a
+                            las 12:00.</p>
+                    </div>
+                </div>
 
                 <!-- Add Interval Form -->
                 <div class="interval-form" [formGroup]="intervalForm">
+                    <div class="start-time-display">
+                        <span class="label">Desde:</span>
+                        <span class="value">{{ nextStartTime }}</span>
+                    </div>
+
                     <mat-form-field appearance="outline" class="time-field">
-                        <input matInput type="time" formControlName="endTime" placeholder="End time">
+                        <mat-label>Hasta</mat-label>
+                        <input matInput type="time" formControlName="endTime" placeholder="Hora de fin">
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="price-field">
-                        <input matInput type="number" formControlName="price" placeholder="Price">
+                        <input matInput type="number" formControlName="price" placeholder="Precio">
                     </mat-form-field>
 
                     <button mat-raised-button color="primary" type="button" (click)="addInterval()">
-                        Add Interval
+                        Agregar Intervalo
                     </button>
                 </div>
 
                 <!-- Intervals Table -->
                 <table mat-table [dataSource]="intervals.controls" class="intervals-table" *ngIf="intervals.length > 0">
+
+                    <ng-container matColumnDef="startTime">
+                        <th mat-header-cell *matHeaderCellDef>Desde</th>
+                        <td mat-cell *matCellDef="let interval; let i = index">{{ getStartTimeForInterval(i) }}</td>
+                    </ng-container>
+
                     <ng-container matColumnDef="endTime">
-                        <th mat-header-cell *matHeaderCellDef>End Time</th>
+                        <th mat-header-cell *matHeaderCellDef>Hasta</th>
                         <td mat-cell *matCellDef="let interval">{{ interval.get('endTime').value }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="price">
-                        <th mat-header-cell *matHeaderCellDef>Price</th>
+                        <th mat-header-cell *matHeaderCellDef>Precio</th>
                         <td mat-cell *matCellDef="let interval">${{ interval.get('price').value }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                        <th mat-header-cell *matHeaderCellDef>Acción</th>
                         <td mat-cell *matCellDef="let interval; let i = index">
-                            <button mat-icon-button (click)="editInterval(i)" type="button">
+                            <button mat-icon-button (click)="editInterval(i)" type="button"
+                                matTooltip="Editar (Mover al formulario)">
                                 <mat-icon>edit</mat-icon>
                             </button>
                             <button mat-icon-button (click)="removeInterval(i)" type="button">
@@ -88,13 +113,14 @@
 
             <!-- Deposit Section -->
             <div class="form-section" *ngIf="selectedCourt">
-                <label class="section-label">Deposit</label>
+                <label class="section-label">Seña</label>
                 <div class="deposit-row">
                     <mat-form-field appearance="outline" class="deposit-field">
-                        <input matInput type="number" formControlName="deposit" placeholder="Enter deposit amount">
+                        <input matInput type="number" formControlName="deposit"
+                            placeholder="Ingrese el monto de la seña">
                     </mat-form-field>
                     <button mat-raised-button color="primary" type="button" (click)="clearDeposit()">
-                        Clear Deposit
+                        Borrar Seña
                     </button>
                 </div>
             </div>
@@ -103,7 +129,7 @@
             <div class="form-actions" *ngIf="selectedCourt">
                 <button mat-raised-button color="primary" class="save-button" type="button" (click)="savePricing()"
                     [disabled]="hasActiveReservations">
-                    Save Pricing
+                    Guardar Precios
                 </button>
             </div>
         </form>

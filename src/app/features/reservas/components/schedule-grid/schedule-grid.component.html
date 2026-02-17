@@ -1,0 +1,47 @@
+<div class="schedule-wrapper">
+    <!-- Time Labels Column -->
+    <div class="time-column">
+        <div class="header-spacer"></div> <!-- Spacer for court header alignment -->
+        <div class="time-label-cell" *ngFor="let slot of timeSlots">
+            {{ slot.label }}
+        </div>
+    </div>
+
+    <!-- Court Columns -->
+    <div class="courts-container">
+        <div class="court-column" *ngFor="let court of courts">
+            <!-- Court Header -->
+            <div class="court-header">
+                <mat-icon class="court-icon">{{ getCourtIcon(court.type) }}</mat-icon>
+                <div class="court-info">
+                    <span class="court-name">{{ court.name }}</span>
+                    <span class="court-type">{{ court.type || 'Estándar' }}</span>
+                </div>
+            </div>
+
+            <!-- Court Grid -->
+            <div class="court-grid" [style.grid-template-rows]="'repeat(' + timeSlots.length + ', 40px)'">
+                <!-- Background Slots (Click Targets) -->
+                <div class="grid-slot" *ngFor="let slot of timeSlots; let i = index" [style.grid-row]="i + 1"
+                    (click)="onSlotClick(court, slot)">
+                </div>
+
+                <!-- Reservations Overlay -->
+                <div class="reservation-item" *ngFor="let reservation of getReservationsForCourt(court.id)"
+                    [style.grid-row]="getGridRowStyle(reservation)"
+                    [style.background-color]="getReservationColor(reservation).bg"
+                    [style.border-left-color]="getReservationColor(reservation).border"
+                    [style.color]="getReservationColor(reservation).text"
+                    (click)="onReservationClick($event, reservation)">
+
+                    <div class="reservation-content">
+                        <span class="res-time">{{ reservation.startTime }} - {{ reservation.endTime }}</span>
+                        <span class="res-name">{{ reservation.userName }}</span>
+                        <span class="res-price" *ngIf="false">{{ reservation.price | currency:'ARS':'$':'1.0-0'
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
