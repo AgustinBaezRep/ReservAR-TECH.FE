@@ -1,18 +1,25 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, delay, tap } from 'rxjs/operators';
 import { Reservation } from '../models/reservation.model';
 import { ReservationStatus } from '../models/reservation-status.enum';
 import { CajaService } from '../../caja/services/caja.service';
+import { CreateReservationRequest } from '../models/reservation-request.model';
+import { ReservationResponse } from '../models/reservation-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationsService {
+  private readonly apiUrl = 'https://localhost:7093/api/reserva';
   private reservationsSubject = new BehaviorSubject<Reservation[]>(this.getMockReservations());
   public reservations$ = this.reservationsSubject.asObservable();
 
-  constructor(private cajaService: CajaService) { }
+  constructor(
+    private cajaService: CajaService,
+    private http: HttpClient
+  ) { }
 
   private getMockReservations(): Reservation[] {
     const today = new Date().toISOString().split('T')[0];
@@ -80,29 +87,45 @@ export class ReservationsService {
     return this.reservations$;
   }
 
-  createReservation(reservation: Partial<Reservation>): Observable<Reservation> {
-    const newReservation: Reservation = {
-      id: Date.now().toString(),
-      courtId: reservation.courtId!,
+  createReservation(reservation: Partial<Reservation>): Observable<ReservationResponse> {
+    const requestBody: CreateReservationRequest = {
       courtName: reservation.courtName!,
       date: reservation.date!,
       startTime: reservation.startTime!,
       endTime: reservation.endTime!,
       userName: reservation.userName!,
       userContact: reservation.userContact!,
-      status: ReservationStatus.Confirmed,
+      userEmail: reservation.userEmail,
       price: reservation.price || 0,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      status: reservation.status || ReservationStatus.Confirmed
     };
 
-    const currentReservations = this.reservationsSubject.value;
-    this.reservationsSubject.next([...currentReservations, newReservation]);
+    return this.http.post<ReservationResponse>(this.apiUrl, requestBody).pipe(
+      tap(response => {
+        // Agregar la reserva al estado local con los datos del backend
+        const newReservation: Reservation = {
+          id: response.id,
+          courtId: reservation.courtId || '',
+          courtName: response.courtName,
+          date: response.date,
+          startTime: response.startTime,
+          endTime: response.endTime,
+          userName: response.userName,
+          userContact: response.userContact,
+          userEmail: response.userEmail,
+          status: response.status as ReservationStatus,
+          price: response.price,
+          createdAt: new Date(response.createdAt),
+          updatedAt: new Date(response.createdAt)
+        };
 
-    // Registrar en Caja
-    this.cajaService.registerReservationMovement(newReservation, 'create');
+        const currentReservations = this.reservationsSubject.value;
+        this.reservationsSubject.next([...currentReservations, newReservation]);
 
-    return of(newReservation).pipe(delay(200));
+        // Registrar en Caja
+        this.cajaService.registerReservationMovement(newReservation, 'create');
+      })
+    );
   }
 
   updateReservation(id: string, updates: Partial<Reservation>): Observable<Reservation> {
@@ -176,4 +199,3 @@ export class ReservationsService {
     return of(void 0).pipe(delay(200));
   }
 }
-

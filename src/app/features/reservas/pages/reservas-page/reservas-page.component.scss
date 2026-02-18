@@ -25,7 +25,9 @@
 .schedule-section {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 }
 
@@ -82,7 +84,10 @@
   color: white;
   padding: 14px 16px;
   border-radius: 4px;
-  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+  box-shadow:
+    0 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0 6px 10px 0 rgba(0, 0, 0, 0.14),
+    0 1px 18px 0 rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -160,5 +165,85 @@
     margin: 0;
     font-size: 1.1rem;
     color: #64748b;
+  }
+}
+
+// --- Backend Response Card ---
+.backend-response-card {
+  margin-top: 1.5rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 12px;
+  padding: 1.25rem;
+  animation: slideIn 0.3s ease-out;
+
+  .response-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #bbf7d0;
+    padding-bottom: 0.75rem;
+
+    mat-icon {
+      color: #16a34a;
+      font-size: 24px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #15803d;
+      flex: 1;
+    }
+
+    .close-btn {
+      color: #64748b;
+    }
+  }
+
+  .response-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1.5rem;
+
+    .response-field {
+      font-size: 0.875rem;
+      color: #334155;
+      padding: 0.25rem 0;
+
+      strong {
+        color: #1e293b;
+      }
+    }
+  }
+
+  .response-raw {
+    margin-top: 1rem;
+    border-top: 1px solid #bbf7d0;
+    padding-top: 0.75rem;
+
+    summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: #16a34a;
+      font-weight: 600;
+
+      &:hover {
+        color: #15803d;
+      }
+    }
+
+    pre {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.75rem;
+      overflow-x: auto;
+      margin-top: 0.5rem;
+      color: #334155;
+    }
   }
 }
