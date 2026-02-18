@@ -14,6 +14,7 @@ import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-
 import { Court, TimeSlot, Reservation } from '../../models/reservation.model';
 import { ReservationsService } from '../../services/reservations.service';
 import { ReservationStatus } from '../../models/reservation-status.enum';
+import { ReservationResponse } from '../../models/reservation-response.model';
 import { ComplejosService } from '../../../complejos/services/complejos.service';
 
 @Component({
@@ -35,6 +36,7 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
   dayReservations: Reservation[] = [];
   allReservations: Reservation[] = [];
   isComplexOnline: boolean = true;
+  lastBackendResponse: ReservationResponse | null = null;
   private destroy$ = new Subject<void>();
 
   // Fecha seleccionada
@@ -259,9 +261,13 @@ export class ReservasPageComponent implements OnInit, OnDestroy {
 
     // remove ID from Partial for creation if needed, or service ignores it
     const { id, ...reservationData } = newReservation;
+    debugger;
 
     this.reservationsService.createReservation(reservationData).subscribe({
-      next: () => {
+      next: (response) => {
+        debugger;
+        this.lastBackendResponse = response;
+        this.cdr.detectChanges();
         this.showMessage('Reserva creada exitosamente');
         this.loadDayReservations();
         this.loadAllReservations();

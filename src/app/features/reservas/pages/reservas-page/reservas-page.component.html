@@ -7,14 +7,19 @@
   <div class="offline-message" *ngIf="!isComplexOnline">
     <mat-icon>cloud_off</mat-icon>
     <h2>Complejo Offline</h2>
-    <p>El complejo está actualmente fuera de línea. No se pueden crear nuevas reservas.</p>
+    <p>
+      El complejo está actualmente fuera de línea. No se pueden crear nuevas
+      reservas.
+    </p>
   </div>
 
   <!-- Navegador de fecha + Grilla -->
   <div class="schedule-section" *ngIf="isComplexOnline">
     <!-- Barra de navegación de fecha -->
     <div class="date-navigator">
-      <button mat-stroked-button class="today-btn" (click)="goToToday()">Hoy</button>
+      <button mat-stroked-button class="today-btn" (click)="goToToday()">
+        Hoy
+      </button>
       <button mat-icon-button (click)="prevDay()">
         <mat-icon>chevron_left</mat-icon>
       </button>
@@ -22,13 +27,72 @@
         <mat-icon>chevron_right</mat-icon>
       </button>
       <mat-icon class="date-icon">calendar_today</mat-icon>
-      <span class="current-date">{{ selectedDate | date:'EEEE d \'de\' MMMM' }}</span>
+      <span class="current-date">{{
+        selectedDate | date: "EEEE d 'de' MMMM"
+      }}</span>
     </div>
 
     <!-- Grilla de horarios -->
-    <app-schedule-grid [courts]="courts" [timeSlots]="timeSlots" [reservations]="dayReservations"
-      (slotClicked)="onSlotClicked($event)" (reservationClicked)="onReservationClicked($event)">
+    <app-schedule-grid
+      [courts]="courts"
+      [timeSlots]="timeSlots"
+      [reservations]="dayReservations"
+      (slotClicked)="onSlotClicked($event)"
+      (reservationClicked)="onReservationClicked($event)"
+    >
     </app-schedule-grid>
+  </div>
+
+  <!-- Última respuesta del backend -->
+  <div class="backend-response-card" *ngIf="lastBackendResponse">
+    <div class="response-header">
+      <mat-icon>cloud_done</mat-icon>
+      <h3>Última reserva guardada en el backend</h3>
+      <button
+        mat-icon-button
+        (click)="lastBackendResponse = null"
+        class="close-btn"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="response-body">
+      <div class="response-field">
+        <strong>ID:</strong> {{ lastBackendResponse.id }}
+      </div>
+      <div class="response-field">
+        <strong>Cancha:</strong> {{ lastBackendResponse.courtName }}
+      </div>
+      <div class="response-field">
+        <strong>Fecha:</strong> {{ lastBackendResponse.date }}
+      </div>
+      <div class="response-field">
+        <strong>Horario:</strong> {{ lastBackendResponse.startTime }} -
+        {{ lastBackendResponse.endTime }}
+      </div>
+      <div class="response-field">
+        <strong>Cliente:</strong> {{ lastBackendResponse.userName }}
+      </div>
+      <div class="response-field">
+        <strong>Contacto:</strong> {{ lastBackendResponse.userContact }}
+      </div>
+      <div class="response-field" *ngIf="lastBackendResponse.userEmail">
+        <strong>Email:</strong> {{ lastBackendResponse.userEmail }}
+      </div>
+      <div class="response-field">
+        <strong>Precio:</strong> ${{ lastBackendResponse.price }}
+      </div>
+      <div class="response-field">
+        <strong>Estado:</strong> {{ lastBackendResponse.status }}
+      </div>
+      <div class="response-field">
+        <strong>Creada:</strong> {{ lastBackendResponse.createdAt }}
+      </div>
+    </div>
+    <details class="response-raw">
+      <summary>Ver JSON completo</summary>
+      <pre>{{ lastBackendResponse | json }}</pre>
+    </details>
   </div>
 </div>
 
