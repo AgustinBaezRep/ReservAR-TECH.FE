@@ -1,13 +1,17 @@
 export interface ReservationResponse {
   id: string;
-  courtName: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  userName: string;
-  userContact: string;
-  userEmail?: string;
-  price: number;
-  status: string;
+  dia: string;
+  hora: number;
+  pago: string;
+  fijo: boolean;
+  // Cancha data
+  idCancha: string;
+  nombreCancha: string;
+  // Usuario data
+  idUsuario: string;
+  nombreUsuario: string;
+  emailUsuario: string;
+  telefonoUsuario: number;
+  // Audit
   createdAt: string;
 }

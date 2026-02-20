@@ -61,29 +61,28 @@
         <strong>ID:</strong> {{ lastBackendResponse.id }}
       </div>
       <div class="response-field">
-        <strong>Cancha:</strong> {{ lastBackendResponse.courtName }}
+        <strong>Cancha:</strong> {{ lastBackendResponse.nombreCancha }}
       </div>
       <div class="response-field">
-        <strong>Fecha:</strong> {{ lastBackendResponse.date }}
+        <strong>Fecha:</strong> {{ lastBackendResponse.dia }}
       </div>
       <div class="response-field">
-        <strong>Horario:</strong> {{ lastBackendResponse.startTime }} -
-        {{ lastBackendResponse.endTime }}
+        <strong>Hora:</strong> {{ lastBackendResponse.hora }}:00
       </div>
       <div class="response-field">
-        <strong>Cliente:</strong> {{ lastBackendResponse.userName }}
+        <strong>Pago:</strong> {{ lastBackendResponse.pago }}
       </div>
       <div class="response-field">
-        <strong>Contacto:</strong> {{ lastBackendResponse.userContact }}
-      </div>
-      <div class="response-field" *ngIf="lastBackendResponse.userEmail">
-        <strong>Email:</strong> {{ lastBackendResponse.userEmail }}
+        <strong>Fijo:</strong> {{ lastBackendResponse.fijo ? 'Sí' : 'No' }}
       </div>
       <div class="response-field">
-        <strong>Precio:</strong> ${{ lastBackendResponse.price }}
+        <strong>Usuario:</strong> {{ lastBackendResponse.nombreUsuario }}
       </div>
       <div class="response-field">
-        <strong>Estado:</strong> {{ lastBackendResponse.status }}
+        <strong>Email:</strong> {{ lastBackendResponse.emailUsuario }}
+      </div>
+      <div class="response-field">
+        <strong>Teléfono:</strong> {{ lastBackendResponse.telefonoUsuario }}
       </div>
       <div class="response-field">
         <strong>Creada:</strong> {{ lastBackendResponse.createdAt }}
