@@ -3,78 +3,72 @@
     min-height: 100vh;
 }
 
-// Hero Section
-.hero-section {
+// ─── Hero Banner ──────────────────────────────
+.hero-banner {
     position: relative;
-    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-    padding: 60px 24px 100px;
+    width: 100%;
+    height: 380px;
     overflow: hidden;
 
-    .hero-background {
+    .banner-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .banner-overlay {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        opacity: 0.15;
-        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon fill='%23fff' points='50,0 100,50 50,100 0,50'/%3E%3C/svg%3E");
-        background-size: 80px;
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 1;
-        max-width: 1200px;
-        margin: 0 auto;
+        background: linear-gradient(to right,
+                rgba(0, 0, 0, 0.65) 0%,
+                rgba(0, 0, 0, 0.3) 60%,
+                transparent 100%);
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 48px;
+    }
 
-        .hero-text {
-            flex: 1;
+    .banner-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 48px;
+        width: 100%;
+
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
             color: white;
+            margin: 0 0 12px;
+            line-height: 1.2;
+            max-width: 560px;
 
-            h1 {
-                font-size: 42px;
-                font-weight: 700;
-                margin: 0 0 16px;
-                line-height: 1.2;
-
-                .highlight {
-                    color: #a3e635; // Lime green accent
-                }
-            }
-
-            .subtitle {
-                font-size: 18px;
-                opacity: 0.9;
-                margin: 0;
+            .highlight {
+                color: #a3e635;
             }
         }
 
-        .hero-image {
-            flex-shrink: 0;
-
-            img {
-                max-width: 400px;
-                border-radius: 16px;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            }
+        .subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            max-width: 460px;
         }
     }
 }
 
-// Search Bar
+// ─── Search Bar ───────────────────────────────
 .search-bar-wrapper {
-    max-width: 900px;
-    margin: -50px auto 24px;
+    max-width: 1100px;
+    margin: -36px auto 24px;
     padding: 0 24px;
     position: relative;
     z-index: 10;
 }
 
-// Results Section
+// ─── Results ──────────────────────────────────
 .content-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -91,26 +85,25 @@
     }
 }
 
-// Mobile Responsive
+// ─── Responsive ───────────────────────────────
 @media (max-width: 768px) {
-    .hero-section {
-        padding: 40px 16px 80px;
+    .hero-banner {
+        height: 260px;
 
-        .hero-content {
-            flex-direction: column;
-            text-align: center;
+        .banner-content {
+            padding: 0 24px;
 
-            .hero-text h1 {
+            h1 {
                 font-size: 28px;
             }
 
-            .hero-image {
-                display: none; // Hide on mobile for cleaner look
+            .subtitle {
+                font-size: 15px;
             }
         }
     }
 
     .search-bar-wrapper {
-        margin-top: -40px;
+        margin-top: -30px;
     }
 }

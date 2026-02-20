@@ -1,164 +1,338 @@
 .detail-page {
     min-height: 100vh;
-    background-color: #f8f9fa;
+    background-color: #f5f7fa;
+    padding-bottom: 80px; // Space for sticky footer
 
-    .hero-image {
-        height: 300px;
+    // Hero Section
+    .hero-section {
+        height: 350px;
         background-size: cover;
         background-position: center;
         position: relative;
         display: flex;
         align-items: flex-end;
-        padding: 24px;
+        padding: 32px;
         color: white;
 
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8));
-        }
-
         .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
             width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
-
-            h1 {
-                font-size: 32px;
-                margin: 0 0 8px;
-            }
-
-            .location {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-                margin-bottom: 8px;
-                font-size: 14px;
-                opacity: 0.9;
-            }
-
-            button {
-                color: #4caf50; // Custom link color
-                padding: 0;
-                min-width: unset;
-                height: auto;
-                line-height: normal;
-            }
-        }
-    }
-
-    .content-container {
-        max-width: 1200px;
-        margin: 24px auto;
-        padding: 0 24px;
-
-        h2 {
-            font-size: 24px;
-            margin-bottom: 24px;
-            color: #333;
-        }
-    }
-
-    .booking-section {
-        background: white;
-        border-radius: 12px;
-        padding: 24px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-        .filters {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 16px;
-        }
-
-        .courts-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-
-            .court-row {
-                display: flex;
-                align-items: center;
-                padding-bottom: 24px;
-                border-bottom: 1px solid #f0f0f0;
-
-                &:last-child {
-                    border-bottom: none;
-                    padding-bottom: 0;
-                }
-
-                .court-info {
-                    width: 250px;
-                    flex-shrink: 0;
-
-                    h3 {
-                        margin: 0 0 4px;
-                        font-size: 16px;
-                        font-weight: 600;
-                    }
-
-                    .features {
-                        font-size: 12px;
-                        color: #888;
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 4px;
-                    }
-                }
-
-                .slots-container {
-                    flex: 1;
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
-                }
-            }
-        }
-
-        .booking-actions {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #eee;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            background: #f9f9f9;
-            padding: 16px;
-            border-radius: 8px;
+            align-items: flex-end;
+            z-index: 1;
 
-            p {
-                margin: 0;
-                font-size: 16px;
+            @media (max-width: 768px) {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .complex-info {
+                .status-badge {
+                    background-color: #4caf50;
+                    color: white;
+                    padding: 4px 12px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    display: inline-block;
+                    margin-bottom: 8px;
+                }
+
+                h1 {
+                    font-size: 42px;
+                    font-weight: 700;
+                    margin: 0 0 12px;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                }
+
+                .rating-location {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 14px;
+                    
+                    .rating {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        font-weight: 600;
+                        mat-icon { font-size: 18px; width: 18px; height: 18px; color: #ffca28; }
+                    }
+
+                    .dot { opacity: 0.6; }
+
+                    .location {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        opacity: 0.9;
+                        mat-icon { font-size: 18px; width: 18px; height: 18px; }
+                    }
+                }
+            }
+
+            .hero-actions {
+                display: flex;
+                gap: 12px;
+
+                .favorite-btn {
+                    background: rgba(255,255,255,0.2);
+                    color: white;
+                    &:hover { background: rgba(255,255,255,0.3); }
+                }
             }
         }
     }
-}
 
-// Media Query for mobile response
-@media (max-width: 768px) {
-    .detail-page {
-        .court-row {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
+    // Content Container
+    .content-container {
+        max-width: 1200px;
+        margin: -24px auto 0;
+        padding: 0 24px;
+        position: relative;
+        z-index: 2;
 
-            .court-info {
-                width: 100%;
+        @media (max-width: 768px) {
+            margin-top: 0;
+            padding: 0;
+        }
+
+        ::ng-deep .mat-mdc-tab-group {
+            background: white;
+            border-radius: 12px; // Rounded top corners
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .tab-content {
+            padding: 24px;
+
+            &.booking-tab {
+                background-color: #f9f9f9; // Slight contrast for booking area
+            }
+        }
+    }
+
+    // Booking Tab Styles
+    .filters-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        .date-selector, .sport-filter {
+            display: flex;
+            gap: 8px;
+            
+            button.active {
+                background-color: #e3f2fd;
+                color: #1976d2;
+                font-weight: 600;
+            }
+        }
+    }
+
+    .courts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .court-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #eee;
+
+            .court-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+
+                .court-title {
+                    h3 {
+                        margin: 0 0 4px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #333;
+                    }
+
+                    .surface-badge {
+                        font-size: 12px;
+                        color: #666;
+                        background: #f0f0f0;
+                        padding: 2px 8px;
+                        border-radius: 4px;
+                    }
+                }
+
+                .court-features {
+                    display: flex;
+                    gap: 12px;
+
+                    .feature-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        font-size: 13px;
+                        color: #666;
+                        
+                        mat-icon { font-size: 16px; width: 16px; height: 16px; color: #4caf50; }
+                    }
+                }
+            }
+
+            .slots-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+
+                .slot-btn {
+                    padding: 8px 16px;
+                    border: 1px solid #ddd;
+                    background: white;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: #333;
+                    transition: all 0.2s;
+
+                    &:hover {
+                        border-color: #1976d2;
+                        color: #1976d2;
+                        background: #f5faff;
+                    }
+
+                    &.selected {
+                        background-color: #1976d2;
+                        color: white;
+                        border-color: #1976d2;
+                    }
+                }
+
+                .no-slots {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    color: #999;
+                    font-size: 14px;
+                    padding: 8px 0;
+                }
+            }
+        }
+    }
+
+    // Info Tab Styles
+    .info-tab {
+        .info-section {
+            margin-bottom: 32px;
+
+            h3 {
+                font-size: 18px;
+                border-bottom: 2px solid #f0f0f0;
+                padding-bottom: 8px;
+                margin-bottom: 16px;
+                color: #333;
             }
         }
 
-        .booking-actions {
-            flex-direction: column;
+        .description {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 16px;
-            align-items: stretch;
+
+            .amenity-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                text-align: center;
+                
+                .icon-circle {
+                    width: 48px;
+                    height: 48px;
+                    background: #f5f7fa;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #555;
+                }
+
+                span { font-size: 13px; color: #666; }
+            }
+        }
+
+        .hours-list {
+            list-style: none;
+            padding: 0;
+            max-width: 400px;
+
+            li {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px solid #eee;
+                font-size: 14px;
+
+                .day { font-weight: 500; }
+                .time { color: #666; }
+            }
+        }
+    }
+
+    // Location Tab
+    .location-tab {
+        min-height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .map-placeholder {
             text-align: center;
+            color: #666;
+
+            mat-icon { font-size: 48px; width: 48px; height: 48px; opacity: 0.5; margin-bottom: 16px; }
+            p { margin-bottom: 24px; font-size: 16px; }
+        }
+    }
+
+    // Sticky Footer
+    .sticky-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 16px 24px;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+
+        .selection-summary {
+            display: flex;
+            flex-direction: column;
+            
+            .label { font-size: 12px; color: #666; }
+            .value { font-size: 16px; font-weight: 700; color: #333; }
         }
     }
 }

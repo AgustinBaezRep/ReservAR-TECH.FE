@@ -1,16 +1,26 @@
 <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-container">
-    <!-- City (Read-only) -->
+    <!-- City -->
     <div class="filter-item city">
         <mat-icon>location_on</mat-icon>
-        <span class="value">Rosario, Santa Fe</span>
+        <mat-select #citySelect formControlName="city" placeholder="¿Dónde?" panelClass="above-panel">
+            <mat-select-trigger>
+                {{ searchForm.get('city')?.value || '¿Dónde?' }}
+            </mat-select-trigger>
+            @for (city of cities; track city) {
+            <mat-option [value]="city">{{ city }}</mat-option>
+            }
+        </mat-select>
     </div>
 
     <div class="divider"></div>
 
     <!-- Sport -->
-    <div class="filter-item">
+    <div class="filter-item sport">
         <mat-icon>{{ getSportIcon() }}</mat-icon>
-        <mat-select formControlName="sport" placeholder="Elige deporte">
+        <mat-select #sportSelect formControlName="sport" placeholder="Elige deporte" panelClass="above-panel">
+            <mat-select-trigger>
+                {{ searchForm.get('sport')?.value || 'Elige deporte' }}
+            </mat-select-trigger>
             @for (sport of sports; track sport.name) {
             <mat-option [value]="sport.name">
                 <div class="sport-option">
@@ -29,19 +39,22 @@
     <div class="divider"></div>
 
     <!-- Date -->
-    <div class="filter-item clickable" (click)="picker.open()">
+    <div class="filter-item date clickable" (click)="picker.open()">
         <mat-icon>calendar_today</mat-icon>
-        <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Fecha" readonly>
-        <mat-datepicker #picker></mat-datepicker>
+        <span class="value">{{ getFormattedDate() || 'Fecha' }}</span>
+        <mat-form-field class="date-form-field">
+            <input matInput [matDatepicker]="picker" [min]="today" formControlName="date">
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
         <mat-icon class="dropdown-arrow">arrow_drop_down</mat-icon>
     </div>
 
     <div class="divider"></div>
 
     <!-- Time -->
-    <div class="filter-item">
+    <div class="filter-item time">
         <mat-icon>schedule</mat-icon>
-        <mat-select formControlName="time" placeholder="Hora">
+        <mat-select #timeSelect formControlName="time" placeholder="Hora" panelClass="above-panel">
             @for (slot of timeSlots; track slot) {
             <mat-option [value]="slot">{{ slot }}</mat-option>
             }

@@ -1,56 +1,152 @@
 <div class="detail-page" *ngIf="complex">
-    <div class="hero-image" [style.backgroundImage]="'url(' + complex.imageUrl + ')'">
-        <div class="overlay"></div>
+    <!-- Hero Section -->
+    <div class="hero-section" [style.backgroundImage]="'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(' + complex.imageUrl + ')'">
         <div class="hero-content">
-            <h1>{{ complex.name }}</h1>
-            <p class="location"><mat-icon>location_on</mat-icon> {{ complex.location }}</p>
-            <button mat-stroked-button color="accent">(ver en mapa)</button>
+            <div class="complex-info">
+                <span class="status-badge open">Abierto ahora</span>
+                <h1>{{ complex.name }}</h1>
+                <div class="rating-location">
+                    <span class="rating">
+                        <mat-icon>star</mat-icon> {{ complexDetails.rating }} ({{ complexDetails.reviewCount }} reseñas)
+                    </span>
+                    <span class="dot">•</span>
+                    <span class="location">
+                        <mat-icon>location_on</mat-icon> {{ complex.location }}
+                    </span>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <button mat-icon-button class="favorite-btn">
+                    <mat-icon>favorite_border</mat-icon>
+                </button>
+                <button mat-flat-button color="accent">
+                    <mat-icon>share</mat-icon> Compartir
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="content-container">
-        <h2>Elige tu turno</h2>
-
-        <div class="booking-section">
-            <div class="filters">
-                <button mat-button color="primary"><mat-icon>sports_tennis</mat-icon> Padel</button>
-                <button mat-button><mat-icon>calendar_today</mat-icon> Hoy</button>
-            </div>
-
-            <div class="courts-grid">
-                @for (court of courts; track court.name) {
-                <div class="court-row">
-                    <div class="court-info">
-                        <h3>{{ court.name }}</h3>
-                        <div class="features">
-                            <span>{{ court.surface }}</span>
-                            <span>|</span>
-                            @for (feature of court.features; track feature) {
-                            <span>{{ feature }}</span>
-                            @if (!$last) { <span>|</span> }
-                            }
+        <mat-tab-group animationDuration="0ms" class="custom-tabs">
+            <!-- Pestaña: Turnos/Canchas -->
+            <mat-tab label="Reservar Turno">
+                <div class="tab-content booking-tab">
+                    
+                    <!-- Filters Toolbar -->
+                    <div class="filters-toolbar">
+                        <div class="date-selector">
+                            <button mat-stroked-button color="primary" class="active">
+                                <mat-icon>calendar_today</mat-icon> Hoy, 18 Feb
+                            </button>
+                            <button mat-button>Mañana</button>
+                            <button mat-button>Jueves</button>
+                        </div>
+                        <div class="sport-filter">
+                            <button mat-button class="active"><mat-icon>sports_tennis</mat-icon> Padel</button>
+                            <button mat-button><mat-icon>sports_soccer</mat-icon> Futbol</button>
                         </div>
                     </div>
-                    <div class="slots-container">
-                        @for (slot of court.slots; track slot) {
-                        <button mat-stroked-button
-                            [color]="selectedSlot === slot && selectedCourt === court.name ? 'accent' : 'primary'"
-                            (click)="selectSlot(court.name, slot)">
-                            {{ slot }}
-                        </button>
-                        }
-                        @if (court.slots.length === 0) {
-                        <span class="no-slots">No hay turnos disponibles</span>
+
+                    <!-- Courts Grid -->
+                    <div class="courts-list">
+                        @for (court of courts; track court.name) {
+                        <div class="court-card">
+                            <div class="court-header">
+                                <div class="court-title">
+                                    <h3>{{ court.name }}</h3>
+                                    <span class="surface-badge">{{ court.surface }}</span>
+                                </div>
+                                <div class="court-features">
+                                    @for (feature of court.features; track feature) {
+                                        <div class="feature-item">
+                                            <mat-icon>check_circle_outline</mat-icon>
+                                            <span>{{ feature }}</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            
+                            <div class="slots-grid">
+                                @for (slot of court.slots; track slot) {
+                                <button class="slot-btn" 
+                                    [class.selected]="selectedSlot === slot && selectedCourt === court.name"
+                                    (click)="selectSlot(court.name, slot)">
+                                    {{ slot }}
+                                </button>
+                                }
+                                @if (court.slots.length === 0) {
+                                <div class="no-slots">
+                                    <mat-icon>event_busy</mat-icon>
+                                    <span>Sin turnos disponibles</span>
+                                </div>
+                                }
+                            </div>
+                        </div>
                         }
                     </div>
                 </div>
-                }
-            </div>
+            </mat-tab>
 
-            <div class="booking-actions" *ngIf="selectedSlot">
-                <p>Turno seleccionado: <strong>{{ selectedCourt }} - {{ selectedSlot }}hs</strong></p>
-                <button mat-flat-button color="primary" (click)="confirmBooking()">Confirmar Reserva</button>
-            </div>
+            <!-- Pestaña: Información -->
+            <mat-tab label="Información">
+                <div class="tab-content info-tab">
+                    <div class="info-section">
+                        <h3>Sobre el complejo</h3>
+                        <p class="description">{{ complexDetails.description }}</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Servicios y Comodidades</h3>
+                        <div class="amenities-grid">
+                            @for (amenity of complexDetails.amenities; track amenity.name) {
+                                <div class="amenity-item">
+                                    <div class="icon-circle">
+                                        <mat-icon>{{ amenity.icon }}</mat-icon>
+                                    </div>
+                                    <span>{{ amenity.name }}</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Horarios de Atención</h3>
+                        <ul class="hours-list">
+                            @for (schedule of complexDetails.openingHours; track schedule.day) {
+                                <li>
+                                    <span class="day">{{ schedule.day }}</span>
+                                    <span class="time">{{ schedule.hours }}</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- Pestaña: Ubicación -->
+            <mat-tab label="Ubicación">
+                <div class="tab-content location-tab">
+                   <div class="map-placeholder">
+                        <mat-icon>map</mat-icon>
+                        <p>{{ complex.location }}</p>
+                        <a mat-stroked-button color="primary" [href]="complexDetails.locationUrl" target="_blank">
+                            Ver en Google Maps
+                        </a>
+                   </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+
+    <!-- Mobile Sticky Footer for Booking Action -->
+    <div class="sticky-footer" *ngIf="selectedSlot">
+        <div class="selection-summary">
+            <span class="label">Reservando:</span>
+            <span class="value">{{ selectedCourt }} - {{ selectedSlot }}hs</span>
         </div>
+        <button mat-flat-button color="primary" (click)="confirmBooking()">
+            Confirmar Reserva
+        </button>
     </div>
 </div>

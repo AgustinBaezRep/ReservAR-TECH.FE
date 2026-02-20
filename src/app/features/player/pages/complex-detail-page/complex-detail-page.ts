@@ -20,6 +20,26 @@ export class ComplexDetailPageComponent implements OnInit {
 
   complex: ComplexSearchResult | undefined;
 
+  // Extended mock data for the complex profile
+  complexDetails = {
+    description: 'El mejor complejo deportivo de la ciudad. Contamos con canchas de última generación y un ambiente ideal para disfrutar del deporte con amigos.',
+    rating: 4.8,
+    reviewCount: 124,
+    amenities: [
+      { icon: 'wifi', name: 'Wi-Fi' },
+      { icon: 'local_parking', name: 'Estacionamiento' },
+      { icon: 'checkroom', name: 'Vestuario' },
+      { icon: 'local_bar', name: 'Bar / Buffet' },
+      { icon: 'security', name: 'Seguridad' }
+    ],
+    openingHours: [
+      { day: 'Lunes a Viernes', hours: '08:00 - 24:00' },
+      { day: 'Sábados', hours: '09:00 - 24:00' },
+      { day: 'Domingos', hours: '09:00 - 22:00' }
+    ],
+    locationUrl: 'https://maps.google.com/?q=' // Mock URL
+  };
+
   // Mock courts for the detail view since complex model is simple
   courts = [
     { name: 'Cancha 1', type: 'Padel', surface: 'Cesped sintético', features: ['Con Iluminación', 'Cubierta'], slots: ['18:00', '19:30', '21:00'] },
