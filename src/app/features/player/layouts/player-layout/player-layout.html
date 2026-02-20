@@ -1,1 +1,116 @@
-<router-outlet></router-outlet>
+<!-- Header -->
+<header class="site-header">
+    <div class="header-inner">
+        <!-- Logo -->
+        <div class="logo" (click)="onLogoClick()">
+            <img src="logo-reservar-tech.png" alt="Reservar Tech" class="logo-img">
+        </div>
+
+        <!-- Center: Search Pill (marketplace) -->
+        <div class="search-pill" *ngIf="!isLandingPage">
+            <button class="pill-segment" (click)="scrollToSearch('sport')">
+                <span>Cualquier deporte</span>
+            </button>
+            <span class="divider"></span>
+            <button class="pill-segment" (click)="scrollToSearch('date')">
+                <span>Cualquier fecha</span>
+            </button>
+            <span class="divider"></span>
+            <button class="pill-segment dim" (click)="scrollToSearch('location')">
+                <span>¿Dónde?</span>
+            </button>
+            <button class="search-btn" (click)="scrollToSearch('sport')">
+                <mat-icon>search</mat-icon>
+            </button>
+        </div>
+
+        <!-- Center: Section Nav (landing) -->
+        <nav class="landing-nav" *ngIf="isLandingPage">
+            <button class="nav-link" (click)="scrollToSection('features-section')">Funcionalidades</button>
+            <button class="nav-link" (click)="scrollToSection('how-section')">Proceso</button>
+            <button class="nav-link" (click)="scrollToSection('proof-section')">Beneficios</button>
+            <button class="nav-link" (click)="scrollToSection('contact-section')">Contacto</button>
+        </nav>
+
+        <!-- Right: Actions -->
+        <div class="header-actions">
+            <button class="text-btn" *ngIf="!isLandingPage" (click)="goToLandingComplejos()">Gestión para
+                complejos</button>
+            <button class="text-btn cta-reserve" *ngIf="isLandingPage" (click)="goHome()">
+                Reservá una cancha
+            </button>
+
+            <!-- User Menu -->
+            <div class="user-menu-wrapper">
+                <button class="login-btn" (click)="toggleDropdown($event)">
+                    <mat-icon>menu</mat-icon>
+                    <mat-icon>account_circle</mat-icon>
+                </button>
+
+                <div class="user-dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+                    <div class="dropdown-section">
+                        <button class="dropdown-item" (click)="goToLandingComplejos()">
+                            <mat-icon>business</mat-icon>
+                            <div class="dropdown-item-content">
+                                <span class="dropdown-item-title">Gestión para complejos</span>
+                                <span class="dropdown-item-desc">Digitalizá y gestioná tu complejo deportivo</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-section">
+                        <button class="dropdown-item" (click)="goHome()">
+                            <mat-icon>search</mat-icon>
+                            <span>Buscar canchas</span>
+                        </button>
+                        <button class="dropdown-item">
+                            <mat-icon>help_outline</mat-icon>
+                            <span>Centro de ayuda</span>
+                        </button>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-section">
+                        <button class="dropdown-item bold" (click)="goToLogin()">
+                            <mat-icon>login</mat-icon>
+                            <span>Iniciar sesión</span>
+                        </button>
+                        <button class="dropdown-item" (click)="goToLogin()">
+                            <mat-icon>person_add</mat-icon>
+                            <span>Registrarse</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="site-main">
+    <router-outlet></router-outlet>
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-left">
+            <span>© {{ currentYear }} Reservar Tech, Inc.</span>
+            <span class="sep">·</span>
+            <a href="#">Privacidad</a>
+            <span class="sep">·</span>
+            <a href="#">Términos</a>
+            <span class="sep">·</span>
+            <a href="#">Contacto</a>
+        </div>
+        <div class="footer-right">
+            <button class="icon-link">
+                <mat-icon>language</mat-icon> Español (AR)
+            </button>
+            <div class="social-icons">
+                <a href="#" aria-label="Instagram"><mat-icon>photo_camera</mat-icon></a>
+                <a href="#" aria-label="Facebook"><mat-icon>facebook</mat-icon></a>
+                <a href="#" aria-label="X"><mat-icon>close</mat-icon></a>
+            </div>
+        </div>
+    </div>
+</footer>

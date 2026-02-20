@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 import { ComplexSearchResult } from '../../models/player.model';
 
 @Component({
@@ -12,4 +13,10 @@ import { ComplexSearchResult } from '../../models/player.model';
 })
 export class ComplexCardComponent {
   @Input() complex!: ComplexSearchResult;
+
+  private router = inject(Router);
+
+  navigateToDetail() {
+    this.router.navigate(['/player', this.complex.id]);
+  }
 }

@@ -1,0 +1,189 @@
+<div class="landing-page">
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-orb hero-orb--1"></div>
+            <div class="hero-orb hero-orb--2"></div>
+            <div class="hero-orb hero-orb--3"></div>
+        </div>
+        <div class="hero-content" data-animate="fade-up">
+            <span class="hero-badge" data-animate="fade-up">🚀 Plataforma #1 para complejos deportivos</span>
+            <h1 data-animate="fade-up">Digitalizá tu complejo y <span class="gradient-text">multiplicá tus
+                    reservas</span></h1>
+            <p class="hero-subtitle" data-animate="fade-up">
+                Gestioná canchas, reservas, cobros y clientes desde una sola plataforma.
+                Más de <strong>100 complejos</strong> ya confían en nosotros.
+            </p>
+            <div class="hero-actions" data-animate="fade-up">
+                <button class="btn-primary" (click)="scrollToContact()">
+                    Empezar ahora
+                    <mat-icon>arrow_forward</mat-icon>
+                </button>
+                <button class="btn-secondary" (click)="scrollToContact()">
+                    Contactar ventas
+                </button>
+            </div>
+            <div class="hero-stats" data-animate="fade-up">
+                <div class="stat">
+                    <span class="stat-number">{{ counterComplejos }}+</span>
+                    <span class="stat-label">Complejos activos</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number">{{ counterReservas | number }}+</span>
+                    <span class="stat-label">Reservas mensuales</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number">{{ counterSatisfaccion }}%</span>
+                    <span class="stat-label">Satisfacción</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FEATURES ═══ -->
+    <section class="features-section" id="features-section">
+        <div class="section-container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-tag">Funcionalidades</span>
+                <h2>Todo lo que necesitás para <span class="gradient-text">gestionar tu complejo</span></h2>
+                <p class="section-desc">Una suite completa de herramientas diseñadas para simplificar la operación
+                    diaria de tu complejo deportivo.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" *ngFor="let feature of features; let i = index" data-animate="fade-up"
+                    [attr.data-delay]="i * 80">
+                    <div class="feature-icon-wrapper">
+                        <mat-icon>{{ feature.icon }}</mat-icon>
+                    </div>
+                    <h3>{{ feature.title }}</h3>
+                    <p>{{ feature.description }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ HOW IT WORKS ═══ -->
+    <section class="how-section" id="how-section">
+        <div class="section-container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-tag">Proceso</span>
+                <h2>Empezar es <span class="gradient-text">muy simple</span></h2>
+                <p class="section-desc">En 4 pasos tenés tu complejo funcionando en la plataforma.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card" *ngFor="let step of steps; let i = index" data-animate="fade-up"
+                    [attr.data-delay]="i * 120">
+                    <div class="step-number">{{ step.number }}</div>
+                    <h3>{{ step.title }}</h3>
+                    <p>{{ step.description }}</p>
+                    <div class="step-connector" *ngIf="i < steps.length - 1">
+                        <mat-icon>arrow_forward</mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ SOCIAL PROOF ═══ -->
+    <section class="proof-section" id="proof-section">
+        <div class="section-container">
+            <div class="proof-grid">
+                <div class="proof-card" data-animate="fade-up" data-delay="0">
+                    <div class="proof-icon">
+                        <mat-icon>speed</mat-icon>
+                    </div>
+                    <h3>Ahorrá 10+ horas por semana</h3>
+                    <p>Automatizá la gestión de turnos y olvidate de las agendas en papel y los WhatsApp.</p>
+                </div>
+                <div class="proof-card" data-animate="fade-up" data-delay="100">
+                    <div class="proof-icon">
+                        <mat-icon>trending_up</mat-icon>
+                    </div>
+                    <h3>Incrementá tus ingresos un 40%</h3>
+                    <p>La visibilidad online y la facilidad de reserva atraen más jugadores a tu complejo.</p>
+                </div>
+                <div class="proof-card" data-animate="fade-up" data-delay="200">
+                    <div class="proof-icon">
+                        <mat-icon>sentiment_very_satisfied</mat-icon>
+                    </div>
+                    <h3>Clientes más satisfechos</h3>
+                    <p>Ofrecé una experiencia de reserva moderna que tus clientes van a amar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA / CONTACT ═══ -->
+    <section class="contact-section" id="contact-section">
+        <div class="section-container">
+            <div class="contact-wrapper">
+                <div class="contact-info" data-animate="fade-right">
+                    <span class="section-tag">Contacto</span>
+                    <h2>¿Listo para <span class="gradient-text">transformar</span> tu complejo?</h2>
+                    <p>Completá el formulario y nuestro equipo se pondrá en contacto con vos en menos de 24 horas.</p>
+                    <div class="contact-benefits">
+                        <div class="benefit" *ngFor="let b of [
+                            'Setup gratuito y sin compromisos',
+                            'Soporte personalizado',
+                            'Plan adaptado a tu complejo',
+                            'Probá gratis por 30 días'
+                        ]; let i = index" data-animate="fade-up" [attr.data-delay]="i * 80">
+                            <mat-icon>check_circle</mat-icon>
+                            <span>{{ b }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form-card" *ngIf="!formSubmitted" data-animate="fade-left">
+                    <h3>Dejanos tus datos</h3>
+                    <form (ngSubmit)="onSubmit()" class="contact-form">
+                        <div class="form-group">
+                            <label for="nombre">Nombre completo *</label>
+                            <input id="nombre" type="text" [(ngModel)]="contactForm.nombre" name="nombre"
+                                placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input id="email" type="email" [(ngModel)]="contactForm.email" name="email"
+                                placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="telefono">Teléfono *</label>
+                                <input id="telefono" type="tel" [(ngModel)]="contactForm.telefono" name="telefono"
+                                    placeholder="+54 341 ..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="complejo">Nombre del complejo</label>
+                                <input id="complejo" type="text" [(ngModel)]="contactForm.complejo" name="complejo"
+                                    placeholder="Mi Complejo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje (opcional)</label>
+                            <textarea id="mensaje" [(ngModel)]="contactForm.mensaje" name="mensaje" rows="3"
+                                placeholder="Contanos sobre tu complejo..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary full-width">
+                            Enviar consulta
+                            <mat-icon>send</mat-icon>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="contact-form-card success-card" *ngIf="formSubmitted" data-animate="scale-in">
+                    <div class="success-content">
+                        <mat-icon class="success-icon">check_circle</mat-icon>
+                        <h3>¡Mensaje enviado!</h3>
+                        <p>Gracias por tu interés, {{ contactForm.nombre }}. Nuestro equipo se pondrá en contacto con
+                            vos pronto.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

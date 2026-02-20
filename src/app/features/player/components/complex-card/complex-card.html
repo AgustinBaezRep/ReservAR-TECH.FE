@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" (click)="navigateToDetail()" style="cursor: pointer;">
     <div class="image-container">
         <img [src]="complex.imageUrl" [alt]="complex.name">
         <div class="price-badge">
@@ -20,7 +20,7 @@
 
         <div class="slots">
             @for (slot of complex.availableSlots; track slot) {
-            <button class="slot-chip">{{ slot }}</button>
+            <button class="slot-chip" (click)="$event.stopPropagation()">{{ slot }}</button>
             }
         </div>
     </div>

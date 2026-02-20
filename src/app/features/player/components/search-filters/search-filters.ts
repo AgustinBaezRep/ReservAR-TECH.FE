@@ -1,18 +1,18 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
 
 interface SportOption {
   name: string;
-  icon: string;  // 'futbol' or 'padel' or 'tenis'
-  slotDuration: number; // in minutes
+  icon: string;
+  slotDuration: number;
 }
 
 @Component({
@@ -35,7 +35,15 @@ interface SportOption {
 })
 export class SearchFiltersComponent implements OnInit {
   @Output() search = new EventEmitter<any>();
+  @ViewChild('picker') picker!: MatDatepicker<Date>;
+  @ViewChild('sportSelect') sportSelect!: MatSelect;
+  @ViewChild('timeSelect') timeSelect!: MatSelect;
+  @ViewChild('citySelect') citySelect!: MatSelect;
+
   searchForm: FormGroup;
+  today = new Date();
+
+  cities: string[] = ['Rosario, Santa Fe', 'Funes, Santa Fe', 'Roldán, Santa Fe'];
 
   sports: SportOption[] = [
     { name: 'Padel', icon: 'padel', slotDuration: 90 },
@@ -54,30 +62,43 @@ export class SearchFiltersComponent implements OnInit {
     this.searchForm = this.fb.group({
       sport: [''],
       date: [new Date()],
-      time: ['']
+      time: [''],
+      city: ['Rosario, Santa Fe']
     });
   }
 
   ngOnInit() {
-    // Generate default time slots (1 hour intervals)
     this.generateTimeSlots(60);
 
-    // Listen for sport changes to update time slots
     this.searchForm.get('sport')?.valueChanges.subscribe((sportName: string) => {
       const sport = this.sports.find(s => s.name === sportName);
       if (sport) {
         this.selectedSport = sport;
         this.generateTimeSlots(sport.slotDuration);
-        // Reset time selection when sport changes
         this.searchForm.patchValue({ time: '' });
       }
     });
   }
 
+
+
+
+  closeAllFilters() {
+    if (this.picker) {
+      this.picker.close();
+    }
+    if (this.sportSelect) {
+      this.sportSelect.close();
+    }
+    if (this.timeSelect) {
+      this.timeSelect.close();
+    }
+  }
+
   generateTimeSlots(durationMinutes: number) {
     this.timeSlots = [];
-    const startMinutes = 8 * 60; // 8:00 AM in minutes
-    const endMinutes = 23 * 60;  // 11:00 PM in minutes
+    const startMinutes = 8 * 60;
+    const endMinutes = 23 * 60;
 
     for (let totalMinutes = startMinutes; totalMinutes + durationMinutes <= endMinutes; totalMinutes += durationMinutes) {
       const hours = Math.floor(totalMinutes / 60);
@@ -96,6 +117,16 @@ export class SearchFiltersComponent implements OnInit {
       case 'tenis': return 'sports_tennis';
       default: return 'sports_tennis';
     }
+  }
+
+  getFormattedDate(): string {
+    const date = this.searchForm.get('date')?.value;
+    if (!date) return '';
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   onSearch() {

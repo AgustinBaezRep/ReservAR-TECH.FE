@@ -2,35 +2,38 @@
     display: flex;
     align-items: center;
     background: white;
-    padding: 8px 8px 8px 24px;
+    padding: 10px 10px 10px 24px;
     border-radius: 50px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    gap: 8px;
+    gap: 0;
+    width: 100%;
+    box-sizing: border-box;
 
     .filter-item {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 8px 16px;
-        min-width: 120px;
-        flex: 1;
+        padding: 10px 16px;
+        flex-shrink: 0;
 
         mat-icon {
-            color: #22c55e; // Green accent
+            color: #22c55e;
             font-size: 20px;
             width: 20px;
             height: 20px;
+            flex-shrink: 0;
         }
 
         .value {
             font-size: 14px;
             color: #333;
             white-space: nowrap;
+            font-weight: 500;
         }
 
         mat-select {
-            flex: 1;
-            min-width: 100px;
+            min-width: 120px;
+            flex-shrink: 0;
         }
 
         // Style mat-select for better visibility
@@ -42,35 +45,22 @@
 
             .mat-mdc-select-trigger {
                 border: none !important;
+                min-height: 28px;
             }
 
             .mat-mdc-select-value-text {
                 color: #333;
                 font-size: 14px;
+                font-weight: 500;
             }
 
             .mat-mdc-select-placeholder {
-                color: #666;
+                color: #888;
                 font-size: 14px;
             }
 
             .mat-mdc-select-arrow {
                 color: #666;
-            }
-        }
-
-        input {
-            border: none;
-            background: transparent;
-            font-size: 14px;
-            color: #333;
-            outline: none;
-            flex: 1;
-            min-width: 80px;
-            cursor: pointer;
-
-            &::placeholder {
-                color: #999;
             }
         }
 
@@ -80,14 +70,36 @@
             width: 18px;
             height: 18px;
             margin-left: -4px;
+            flex-shrink: 0;
         }
 
         &.city {
+            min-width: 170px;
+        }
+
+        &.sport {
             min-width: 160px;
+        }
+
+        &.date {
+            min-width: 150px;
+        }
+
+        &.time {
+            min-width: 120px;
         }
 
         &.clickable {
             cursor: pointer;
+        }
+
+        .date-form-field {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
         }
     }
 
@@ -95,38 +107,47 @@
     ::ng-deep .sport-option {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
 
         .sport-icon {
             color: #22c55e;
-            font-size: 18px;
-            width: 18px;
-            height: 18px;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
+
+        span {
+            font-size: 14px;
         }
     }
 
     .divider {
         width: 1px;
-        height: 24px;
+        height: 28px;
         background: #e0e0e0;
+        flex-shrink: 0;
     }
 
     .search-button {
         border-radius: 50px;
-        padding: 12px 24px;
-        font-weight: 500;
+        padding: 12px 28px;
+        font-weight: 600;
+        font-size: 14px;
         white-space: nowrap;
-        background: #6b7280; // Gray button like reference
+        background: #2e7d32;
         color: white;
+        letter-spacing: 0.3px;
+        flex-shrink: 0;
+        margin-left: auto;
 
         &:hover {
-            background: #4b5563;
+            background: #1b5e20;
         }
     }
 }
 
 // Responsive
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .search-container {
         flex-wrap: wrap;
         border-radius: 16px;
