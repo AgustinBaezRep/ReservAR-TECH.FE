@@ -3,6 +3,81 @@
     min-height: 100vh;
 }
 
+// ─── Animations ───────────────────────────────
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slowZoom {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.15);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-up {
+    animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.1s;
+    opacity: 0;
+}
+
+.animate-fade-up-stagger {
+    animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+
+    // Si podemos apuntar a los hijos para escalonarlos (ej. cards de la app-complex-list)
+    ::ng-deep app-complex-card {
+        animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+
+        &:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+
+        &:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        &:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        &:nth-child(4) {
+            animation-delay: 0.7s;
+        }
+
+        &:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+    }
+}
+
 // ─── Hero Banner ──────────────────────────────
 .hero-banner {
     position: relative;
@@ -15,6 +90,7 @@
         height: 100%;
         object-fit: cover;
         display: block;
+        animation: slowZoom 25s linear infinite alternate;
     }
 
     .banner-overlay {
@@ -24,8 +100,8 @@
         right: 0;
         bottom: 0;
         background: linear-gradient(to right,
-                rgba(0, 0, 0, 0.65) 0%,
-                rgba(0, 0, 0, 0.3) 60%,
+                rgba(0, 0, 0, 0.75) 0%,
+                rgba(0, 0, 0, 0.4) 60%,
                 transparent 100%);
         display: flex;
         align-items: center;
@@ -44,17 +120,19 @@
             margin: 0 0 12px;
             line-height: 1.2;
             max-width: 560px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 
             .highlight {
-                color: #a3e635;
+                color: #10b981; // emerald-500
             }
         }
 
         .subtitle {
             font-size: 18px;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
             margin: 0;
             max-width: 460px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
     }
 }

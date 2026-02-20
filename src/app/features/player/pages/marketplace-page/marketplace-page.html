@@ -1,23 +1,24 @@
 <div class="marketplace-page">
     <!-- Hero Banner -->
-    <section class="hero-banner">
-        <img src="banner-padel.jpg" alt="Cancha de padel" class="banner-img">
+    <section class="hero-banner animate-fade-in">
+        <img src="https://images.unsplash.com/photo-1646649853703-7645147474ba?q=80&w=1470&auto=format&fit=crop"
+            alt="Cancha de futbol o padel" class="banner-img">
         <div class="banner-overlay">
             <div class="banner-content">
                 <h1>Encontrá <span class="highlight">canchas</span> y <span class="highlight">jugadores</span> cerca
                     tuyo</h1>
-                <p class="subtitle">Reservá tu turno en los mejores complejos de Rosario.</p>
+                <p class="subtitle">Reservá tu turno en los mejores complejos de la zona.</p>
             </div>
         </div>
     </section>
 
     <!-- Search Filters Bar -->
-    <div class="search-bar-wrapper">
+    <div class="search-bar-wrapper animate-slide-up">
         <app-search-filters (search)="onSearch($event)"></app-search-filters>
     </div>
 
     <!-- Results Section -->
-    <div class="content-container">
+    <div class="content-container animate-fade-up-stagger">
         <div class="results-header">
             <h2>{{ filteredComplexes.length }} clubes encontrados en Rosario, Santa Fe, Argentina</h2>
         </div>

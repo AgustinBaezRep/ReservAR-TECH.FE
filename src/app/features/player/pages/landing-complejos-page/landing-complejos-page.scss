@@ -1,13 +1,13 @@
 // ─── Variables ────────────────────────────────
-$green-primary: #2e7d32;
-$green-dark: #1b5e20;
-$green-light: #4caf50;
+$green-primary: #10b981; // emerald-500
+$green-dark: #059669; // emerald-600
+$green-light: #34d399; // emerald-400
 $lime-accent: #a3e635;
 $bg-dark: #0a1a0d;
-$bg-section: #f5faf6;
-$text-primary: #1a1a2e;
-$text-secondary: #64748b;
-$border-color: #e2e8f0;
+$bg-section: #f5f7fa;
+$text-primary: #222222;
+$text-secondary: #717171;
+$border-color: #ebebeb;
 $card-bg: #ffffff;
 $radius-lg: 20px;
 $radius-md: 14px;
@@ -160,7 +160,7 @@ $radius-md: 14px;
 
 // ─── Shared ───────────────────────────────────
 .landing-page {
-    font-family: 'Inter', 'Roboto', sans-serif;
+    font-family: inherit;
     color: $text-primary;
     overflow-x: hidden;
 }

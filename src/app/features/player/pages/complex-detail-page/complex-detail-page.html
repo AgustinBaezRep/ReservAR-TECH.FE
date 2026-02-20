@@ -1,152 +1,201 @@
 <div class="detail-page" *ngIf="complex">
-    <!-- Hero Section -->
-    <div class="hero-section" [style.backgroundImage]="'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(' + complex.imageUrl + ')'">
-        <div class="hero-content">
-            <div class="complex-info">
-                <span class="status-badge open">Abierto ahora</span>
-                <h1>{{ complex.name }}</h1>
-                <div class="rating-location">
-                    <span class="rating">
-                        <mat-icon>star</mat-icon> {{ complexDetails.rating }} ({{ complexDetails.reviewCount }} reseñas)
-                    </span>
-                    <span class="dot">•</span>
-                    <span class="location">
-                        <mat-icon>location_on</mat-icon> {{ complex.location }}
-                    </span>
+
+    <!-- Top Gallery/Hero -->
+    <div class="gallery-wrapper">
+        <div class="gallery-section">
+            <div class="main-photo" [style.backgroundImage]="'url(' + complex.imageUrl + ')'" (click)="openGallery(0)">
+            </div>
+            <div class="side-photos">
+                <div class="photo" (click)="openGallery(1)"
+                    style="background-image: url('https://images.unsplash.com/photo-1646649853703-7645147474ba?q=80&w=1470&auto=format&fit=crop')">
+                </div>
+                <!-- Repeating image just for mockup purposes -->
+                <div class="photo" (click)="openGallery(2)"
+                    style="background-image: url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=1470&auto=format&fit=crop')">
                 </div>
             </div>
-            <div class="hero-actions">
-                <button mat-icon-button class="favorite-btn">
-                    <mat-icon>favorite_border</mat-icon>
-                </button>
-                <button mat-flat-button color="accent">
-                    <mat-icon>share</mat-icon> Compartir
-                </button>
-            </div>
+            <button mat-stroked-button class="view-all-photos" (click)="openGallery(0)">
+                <mat-icon>apps</mat-icon> Mostrar todas las fotos
+            </button>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="content-container">
-        <mat-tab-group animationDuration="0ms" class="custom-tabs">
-            <!-- Pestaña: Turnos/Canchas -->
-            <mat-tab label="Reservar Turno">
-                <div class="tab-content booking-tab">
-                    
-                    <!-- Filters Toolbar -->
-                    <div class="filters-toolbar">
-                        <div class="date-selector">
-                            <button mat-stroked-button color="primary" class="active">
-                                <mat-icon>calendar_today</mat-icon> Hoy, 18 Feb
-                            </button>
-                            <button mat-button>Mañana</button>
-                            <button mat-button>Jueves</button>
-                        </div>
-                        <div class="sport-filter">
-                            <button mat-button class="active"><mat-icon>sports_tennis</mat-icon> Padel</button>
-                            <button mat-button><mat-icon>sports_soccer</mat-icon> Futbol</button>
-                        </div>
-                    </div>
+    <!-- Main Content Layout -->
+    <div class="content-container layout-2-col">
 
-                    <!-- Courts Grid -->
-                    <div class="courts-list">
-                        @for (court of courts; track court.name) {
-                        <div class="court-card">
-                            <div class="court-header">
-                                <div class="court-title">
-                                    <h3>{{ court.name }}</h3>
-                                    <span class="surface-badge">{{ court.surface }}</span>
-                                </div>
-                                <div class="court-features">
-                                    @for (feature of court.features; track feature) {
-                                        <div class="feature-item">
-                                            <mat-icon>check_circle_outline</mat-icon>
-                                            <span>{{ feature }}</span>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                            
-                            <div class="slots-grid">
-                                @for (slot of court.slots; track slot) {
-                                <button class="slot-btn" 
-                                    [class.selected]="selectedSlot === slot && selectedCourt === court.name"
-                                    (click)="selectSlot(court.name, slot)">
-                                    {{ slot }}
-                                </button>
-                                }
-                                @if (court.slots.length === 0) {
-                                <div class="no-slots">
-                                    <mat-icon>event_busy</mat-icon>
-                                    <span>Sin turnos disponibles</span>
-                                </div>
-                                }
-                            </div>
-                        </div>
+        <!-- Left Column: Info & Details -->
+        <div class="left-col">
+            <div class="header-info">
+                <div class="title-wrap">
+                    <h1>{{ complex.name }}</h1>
+                    <div class="rating-location">
+                        <span class="rating">
+                            <mat-icon>star</mat-icon> {{ complexDetails.rating }} ({{ complexDetails.reviewCount }}
+                            reseñas)
+                        </span>
+                        <span class="dot">•</span>
+                        <span class="location">
+                            <u>{{ complex.location }}</u>
+                        </span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="action-btn"><mat-icon>share</mat-icon> <span>Compartir</span></button>
+                    <button class="action-btn"><mat-icon>favorite_border</mat-icon> <span>Guardar</span></button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="info-section">
+                <h3>Acerca de este complejo</h3>
+                <p class="description">{{ complexDetails.description }}</p>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="info-section">
+                <h3>¿Qué ofrece este lugar?</h3>
+                <div class="amenities-grid">
+                    @for (amenity of complexDetails.amenities; track amenity.name) {
+                    <div class="amenity-item">
+                        <mat-icon>{{ amenity.icon }}</mat-icon>
+                        <span>{{ amenity.name }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="info-section">
+                <h3>Horarios de Atención</h3>
+                <ul class="hours-list">
+                    @for (schedule of complexDetails.openingHours; track schedule.day) {
+                    <li>
+                        <span class="day">{{ schedule.day }}</span>
+                        <span class="time">{{ schedule.hours }}</span>
+                    </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="info-section">
+                <h3>¿Dónde vas a jugar?</h3>
+                <p class="location-text"><mat-icon>stadium</mat-icon> {{ complex.location }}</p>
+                <div class="map-container">
+                    <iframe [src]="mapUrlSafe" width="100%" height="300" style="border:0;" allowfullscreen=""
+                        loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    <!-- Overlay shield to prevent panning (keeps custom marker perfectly aligned with map center) -->
+                    <div class="map-shield"></div>
+                    <!-- Custom Airbnb-like marker over the center -->
+                    <div class="custom-marker">
+                        <mat-icon>stadium</mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Booking Widget Sticky -->
+        <div class="right-col">
+            <div class="booking-widget">
+                <div class="widget-header">
+                    <h2>Reservar Turno</h2>
+                    <span class="desde-price">Desde <strong>{{ complex.minPrice | currency:'USD':'symbol':'1.0-0'
+                            }}</strong> por hora</span>
+                </div>
+
+                <div class="widget-filters">
+                    <div class="date-selector-scroll">
+                        @for (day of availableDays; track day.name) {
+                        <button class="date-btn" [class.active]="selectedDayFilter === day.name"
+                            (click)="selectDay(day.name)">
+                            <span class="day-name">{{ day.name }}</span>
+                            <span class="day-num">{{ day.num }}</span>
+                        </button>
                         }
                     </div>
-                </div>
-            </mat-tab>
 
-            <!-- Pestaña: Información -->
-            <mat-tab label="Información">
-                <div class="tab-content info-tab">
-                    <div class="info-section">
-                        <h3>Sobre el complejo</h3>
-                        <p class="description">{{ complexDetails.description }}</p>
+                    <div class="sport-toggle">
+                        <button [class.active]="selectedSportFilter === 'Padel'"
+                            (click)="selectSport('Padel')">Padel</button>
+                        <button [class.active]="selectedSportFilter === 'Futbol'"
+                            (click)="selectSport('Futbol')">Futbol</button>
+                        <button [class.active]="selectedSportFilter === 'Tenis'"
+                            (click)="selectSport('Tenis')">Tenis</button>
                     </div>
+                </div>
 
-                    <div class="info-section">
-                        <h3>Servicios y Comodidades</h3>
-                        <div class="amenities-grid">
-                            @for (amenity of complexDetails.amenities; track amenity.name) {
-                                <div class="amenity-item">
-                                    <div class="icon-circle">
-                                        <mat-icon>{{ amenity.icon }}</mat-icon>
-                                    </div>
-                                    <span>{{ amenity.name }}</span>
-                                </div>
+                <div class="courts-list">
+                    @for (court of filteredCourts; track court.name) {
+                    <div class="court-mini-card">
+                        <div class="c-head">
+                            <span class="c-name">{{ court.name }}</span>
+                            <span class="c-surface">{{ court.surface }}</span>
+                        </div>
+                        <div class="c-slots">
+                            @for (slot of court.slots; track slot) {
+                            <button class="slot-btn"
+                                [class.selected]="selectedSlot === slot && selectedCourt === court.name"
+                                (click)="selectSlot(court.name, slot)">
+                                {{ slot }}
+                            </button>
+                            }
+                            @if (court.slots.length === 0) {
+                            <span class="no-slots">Agotado</span>
                             }
                         </div>
                     </div>
+                    }
+                </div>
 
-                    <div class="info-section">
-                        <h3>Horarios de Atención</h3>
-                        <ul class="hours-list">
-                            @for (schedule of complexDetails.openingHours; track schedule.day) {
-                                <li>
-                                    <span class="day">{{ schedule.day }}</span>
-                                    <span class="time">{{ schedule.hours }}</span>
-                                </li>
-                            }
-                        </ul>
+                <div class="booking-footer" *ngIf="selectedSlot">
+                    <div class="summary">
+                        Has seleccionado:<br>
+                        <strong>{{ selectedCourt }} a las {{ selectedSlot }}hs</strong>
                     </div>
+                    <button class="cta-btn full-width" (click)="confirmBooking()">Reservar</button>
                 </div>
-            </mat-tab>
+                <div class="booking-footer empty" *ngIf="!selectedSlot">
+                    <button class="cta-btn full-width disabled">Seleccioná un turno</button>
+                    <span class="note">No se te cobrará nada aún</span>
+                </div>
+            </div>
+        </div>
 
-            <!-- Pestaña: Ubicación -->
-            <mat-tab label="Ubicación">
-                <div class="tab-content location-tab">
-                   <div class="map-placeholder">
-                        <mat-icon>map</mat-icon>
-                        <p>{{ complex.location }}</p>
-                        <a mat-stroked-button color="primary" [href]="complexDetails.locationUrl" target="_blank">
-                            Ver en Google Maps
-                        </a>
-                   </div>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
     </div>
 
     <!-- Mobile Sticky Footer for Booking Action -->
-    <div class="sticky-footer" *ngIf="selectedSlot">
+    <div class="mobile-sticky-footer" *ngIf="selectedSlot">
         <div class="selection-summary">
-            <span class="label">Reservando:</span>
+            <span class="label">Turno seleccionado</span>
             <span class="value">{{ selectedCourt }} - {{ selectedSlot }}hs</span>
         </div>
-        <button mat-flat-button color="primary" (click)="confirmBooking()">
-            Confirmar Reserva
-        </button>
+        <button class="cta-btn" (click)="confirmBooking()">Reservar</button>
+    </div>
+
+    <!-- Fullscreen Gallery Overlay -->
+    <div class="gallery-overlay" *ngIf="showGallery">
+        <div class="gallery-header">
+            <span class="photo-counter">{{ currentPhotoIndex + 1 }} / {{ galleryPhotos.length }}</span>
+            <button mat-icon-button class="close-btn" (click)="closeGallery()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div class="gallery-body">
+            <button mat-icon-button class="nav-btn prev" (click)="prevPhoto()">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+
+            <img [src]="galleryPhotos[currentPhotoIndex]" alt="Gallery Photo" class="gallery-main-img">
+
+            <button mat-icon-button class="nav-btn next" (click)="nextPhoto()">
+                <mat-icon>chevron_right</mat-icon>
+            </button>
+        </div>
     </div>
 </div>

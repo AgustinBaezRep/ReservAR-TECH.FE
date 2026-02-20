@@ -14,6 +14,7 @@ export class PlayerService {
             location: 'Pres. Roca 3650, Rosario, Santa Fe',
             minPrice: 40000,
             imageUrl: 'https://placehold.co/600x400/2a9d8f/ffffff?text=Ave+Fenix',
+            sports: ['Futbol 5', 'Futbol 7'],
             availableSlots: ['11:00', '11:30', '12:00', '12:30']
         },
         {
@@ -22,6 +23,7 @@ export class PlayerService {
             location: 'Chacabuco 1939, Rosario',
             minPrice: 28000,
             imageUrl: 'https://placehold.co/600x400/e9c46a/ffffff?text=Loyal',
+            sports: ['Padel', 'Tenis'],
             availableSlots: ['12:00', '13:30']
         },
         {
@@ -30,6 +32,7 @@ export class PlayerService {
             location: 'Buenos Aires 1906, Villa Gobernador Galvez',
             minPrice: 28000,
             imageUrl: 'https://placehold.co/600x400/f4a261/ffffff?text=El+Predio',
+            sports: ['Futbol 5', 'Futbol 7', 'Futbol 11'],
             availableSlots: ['12:00', '13:30']
         },
         {
@@ -38,6 +41,7 @@ export class PlayerService {
             location: 'Colectora 25 de mayo 4151, Rosario',
             minPrice: 26000,
             imageUrl: 'https://placehold.co/600x400/e76f51/ffffff?text=Ova+Padel',
+            sports: ['Padel'],
             availableSlots: ['11:00', '12:30', '14:00']
         },
         {
@@ -46,6 +50,7 @@ export class PlayerService {
             location: 'Angel marino Gervaso y autopista',
             minPrice: 28000,
             imageUrl: 'https://placehold.co/600x400/264653/ffffff?text=KM+8',
+            sports: ['Padel', 'Tenis'],
             availableSlots: ['11:30', '13:00']
         }
     ];

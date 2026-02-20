@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../../login/services/auth.service';
 
 @Component({
   selector: 'app-player-layout',
@@ -18,11 +19,37 @@ export class PlayerLayoutComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private document = inject(DOCUMENT);
+  private authService = inject(AuthService);
   currentYear = new Date().getFullYear();
   isLandingPage = false;
   showDropdown = false;
+  isScrolled = false;
   private routeSub!: Subscription;
   private queryParamSub!: Subscription;
+
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  get currentUser(): any {
+    return this.authService.getUser();
+  }
+
+  get isMarketplace(): boolean {
+    return this.router.url === '/player' || this.router.url.startsWith('/player?');
+  }
+
+  get showSearchPill(): boolean {
+    if (this.isLandingPage) return false;
+    if (this.isMarketplace) return this.isScrolled;
+    return true; // Always show on complex details, profile, etc.
+  }
+
+  logout() {
+    this.authService.logout();
+    this.showDropdown = false;
+    this.router.navigate(['/player']);
+  }
 
   ngOnInit() {
     this.checkRoute(this.router.url);
@@ -55,6 +82,12 @@ export class PlayerLayoutComponent implements OnInit, OnDestroy {
     if (!target.closest('.user-menu-wrapper')) {
       this.showDropdown = false;
     }
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    // 280 is comfortably after the hero text and close to the search bar
+    this.isScrolled = window.scrollY > 280;
   }
 
   private checkRoute(url: string) {
@@ -106,13 +139,16 @@ export class PlayerLayoutComponent implements OnInit, OnDestroy {
         let target: HTMLElement | null = null;
         switch (filterType) {
           case 'sport':
-            target = this.document.querySelector('.filter-item.sport .mat-mdc-select-trigger') as HTMLElement;
+            target = this.document.querySelector('.filter-group.sport .mat-mdc-select-trigger') as HTMLElement;
             break;
           case 'date':
-            target = this.document.querySelector('.filter-item.date') as HTMLElement;
+            target = this.document.querySelector('.filter-group.date') as HTMLElement;
+            break;
+          case 'time':
+            target = this.document.querySelector('.filter-group.time .mat-mdc-select-trigger') as HTMLElement;
             break;
           case 'location':
-            target = this.document.querySelector('.filter-item.city .mat-mdc-select-trigger') as HTMLElement;
+            target = this.document.querySelector('.filter-group.city .mat-mdc-select-trigger') as HTMLElement;
             break;
         }
         if (target) {
