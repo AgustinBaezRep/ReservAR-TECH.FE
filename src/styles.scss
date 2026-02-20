@@ -1,4 +1,3 @@
-
 // Include theming for Angular Material with `mat.theme()`.
 // This Sass mixin will define CSS variables that are used for styling Angular Material
 // components according to the Material 3 design spec.
@@ -7,14 +6,12 @@
 @use '@angular/material' as mat;
 
 html {
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  @include mat.theme((color: (primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    ));
 }
 
 body {
@@ -33,7 +30,40 @@ body {
   // Reset the user agent margin.
   margin: 0;
 }
+
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Custom Overlays for Search Filters */
+.search-select-panel {
+  min-width: 220px !important;
+  border-radius: 16px !important;
+  margin-top: 24px !important;
+  /* Push it down below the rounded bar */
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15) !important;
+  background-color: white !important;
+
+  .mat-mdc-option {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    min-height: 52px;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background-color: #f3f4f6 !important;
+    }
+
+    .mdc-list-item__primary-text {
+      color: #111827;
+    }
+  }
+}

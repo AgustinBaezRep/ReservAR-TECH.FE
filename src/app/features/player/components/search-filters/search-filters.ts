@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,6 +42,7 @@ export class SearchFiltersComponent implements OnInit {
 
   searchForm: FormGroup;
   today = new Date();
+  maxDate = new Date();
 
   cities: string[] = ['Rosario, Santa Fe', 'Funes, Santa Fe', 'Roldán, Santa Fe'];
 
@@ -59,6 +60,7 @@ export class SearchFiltersComponent implements OnInit {
   selectedSport: SportOption | null = null;
 
   constructor(private fb: FormBuilder) {
+    this.maxDate.setDate(this.today.getDate() + 7);
     this.searchForm = this.fb.group({
       sport: [''],
       date: [new Date()],
@@ -83,6 +85,11 @@ export class SearchFiltersComponent implements OnInit {
 
 
 
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    this.closeAllFilters();
+  }
+
   closeAllFilters() {
     if (this.picker) {
       this.picker.close();
@@ -92,6 +99,25 @@ export class SearchFiltersComponent implements OnInit {
     }
     if (this.timeSelect) {
       this.timeSelect.close();
+    }
+    if (this.citySelect) {
+      this.citySelect.close();
+    }
+  }
+
+  clearFilter(controlName: string, event: Event) {
+    event.stopPropagation();
+    this.searchForm.get(controlName)?.setValue('');
+
+    // Additional logic side-effects
+    if (controlName === 'sport') {
+      this.selectedSport = null;
+      this.generateTimeSlots(60); // Reset to default 60min slots
+      this.searchForm.get('time')?.setValue('');
+    }
+    if (controlName === 'date') {
+      // If date is completely required can't be null but leaving empty is fine for search params if backend supports it.
+      // Omitir si backend reacciona mal
     }
   }
 
@@ -131,5 +157,13 @@ export class SearchFiltersComponent implements OnInit {
 
   onSearch() {
     this.search.emit(this.searchForm.value);
+  }
+
+  clearField(field: string, event: Event) {
+    event.stopPropagation();
+    this.searchForm.get(field)?.setValue('');
+    if (field === 'sport') {
+      this.selectedSport = null;
+    }
   }
 }

@@ -1,67 +1,90 @@
-<form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-container">
+<form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-container v2">
     <!-- City -->
-    <div class="filter-item city">
-        <mat-icon>location_on</mat-icon>
-        <mat-select #citySelect formControlName="city" placeholder="¿Dónde?" panelClass="above-panel">
-            <mat-select-trigger>
-                {{ searchForm.get('city')?.value || '¿Dónde?' }}
-            </mat-select-trigger>
-            @for (city of cities; track city) {
-            <mat-option [value]="city">{{ city }}</mat-option>
-            }
-        </mat-select>
+    <div class="filter-group city">
+        <label class="filter-label">DÓNDE</label>
+        <div class="filter-input-wrapper">
+            <mat-select #citySelect formControlName="city" placeholder="¿Dónde?" panelClass="above-panel">
+                <mat-select-trigger>
+                    {{ searchForm.get('city')?.value || '¿Dónde?' }}
+                </mat-select-trigger>
+                @for (city of cities; track city) {
+                <mat-option [value]="city">{{ city }}</mat-option>
+                }
+            </mat-select>
+            <button *ngIf="searchForm.get('city')?.value" type="button" class="clear-btn"
+                (click)="clearField('city', $event)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
     </div>
 
     <div class="divider"></div>
 
     <!-- Sport -->
-    <div class="filter-item sport">
-        <mat-icon>{{ getSportIcon() }}</mat-icon>
-        <mat-select #sportSelect formControlName="sport" placeholder="Elige deporte" panelClass="above-panel">
-            <mat-select-trigger>
-                {{ searchForm.get('sport')?.value || 'Elige deporte' }}
-            </mat-select-trigger>
-            @for (sport of sports; track sport.name) {
-            <mat-option [value]="sport.name">
-                <div class="sport-option">
-                    @if (sport.icon === 'futbol') {
-                    <mat-icon class="sport-icon">sports_soccer</mat-icon>
-                    } @else {
-                    <mat-icon class="sport-icon">sports_tennis</mat-icon>
-                    }
-                    <span>{{ sport.name }}</span>
-                </div>
-            </mat-option>
-            }
-        </mat-select>
+    <div class="filter-group sport">
+        <label class="filter-label">DEPORTE</label>
+        <div class="filter-input-wrapper">
+            <mat-select #sportSelect formControlName="sport" placeholder="¿Qué jugamos?" panelClass="above-panel">
+                <mat-select-trigger>
+                    <span class="truncate-value">{{ searchForm.get('sport')?.value || '¿Qué jugamos?' }}</span>
+                </mat-select-trigger>
+                @for (sport of sports; track sport.name) {
+                <mat-option [value]="sport.name">
+                    <div class="sport-option">
+                        <span>{{ sport.name }}</span>
+                    </div>
+                </mat-option>
+                }
+            </mat-select>
+            <button *ngIf="searchForm.get('sport')?.value" type="button" class="clear-btn"
+                (click)="clearField('sport', $event)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
     </div>
 
     <div class="divider"></div>
 
     <!-- Date -->
-    <div class="filter-item date clickable" (click)="picker.open()">
-        <mat-icon>calendar_today</mat-icon>
-        <span class="value">{{ getFormattedDate() || 'Fecha' }}</span>
-        <mat-form-field class="date-form-field">
-            <input matInput [matDatepicker]="picker" [min]="today" formControlName="date">
-            <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <mat-icon class="dropdown-arrow">arrow_drop_down</mat-icon>
+    <div class="filter-group date clickable" (click)="picker.open()">
+        <label class="filter-label">CUÁNDO</label>
+        <div class="filter-input-wrapper">
+            <span class="value" [class.placeholder]="!searchForm.get('date')?.value">{{ getFormattedDate() ||
+                '19/02/2026' }}</span>
+            <button *ngIf="searchForm.get('date')?.value" type="button" class="clear-btn"
+                (click)="clearField('date', $event)">
+                <mat-icon>close</mat-icon>
+            </button>
+            <mat-form-field class="date-form-field">
+                <input matInput [matDatepicker]="picker" [min]="today" formControlName="date">
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
     </div>
 
     <div class="divider"></div>
 
     <!-- Time -->
-    <div class="filter-item time">
-        <mat-icon>schedule</mat-icon>
-        <mat-select #timeSelect formControlName="time" placeholder="Hora" panelClass="above-panel">
-            @for (slot of timeSlots; track slot) {
-            <mat-option [value]="slot">{{ slot }}</mat-option>
-            }
-        </mat-select>
+    <div class="filter-group time">
+        <label class="filter-label">HORA</label>
+        <div class="filter-input-wrapper">
+            <mat-select #timeSelect formControlName="time" placeholder="Cualquier horario" panelClass="above-panel">
+                <mat-select-trigger>
+                    <span class="truncate-value">{{ searchForm.get('time')?.value || 'Cualquier horario' }}</span>
+                </mat-select-trigger>
+                @for (slot of timeSlots; track slot) {
+                <mat-option [value]="slot">{{ slot }}</mat-option>
+                }
+            </mat-select>
+            <button *ngIf="searchForm.get('time')?.value" type="button" class="clear-btn"
+                (click)="clearField('time', $event)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
     </div>
 
     <button mat-flat-button color="primary" type="submit" class="search-button">
-        Buscar canchas
+        <mat-icon>search</mat-icon>
+        <span>Buscar</span>
     </button>
 </form>

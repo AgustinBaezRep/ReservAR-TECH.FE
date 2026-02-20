@@ -5,9 +5,14 @@
         <div class="logo" (click)="onLogoClick()">
             <img src="logo-reservar-tech.png" alt="Reservar Tech" class="logo-img">
         </div>
-
-        <!-- Center: Search Pill (marketplace) -->
-        <div class="search-pill" *ngIf="!isLandingPage">
+        <!-- Center: Search Pill (compact filter) -->
+        @if (showSearchPill) {
+        <!-- Desktop Pill -->
+        <div class="search-pill animate-fade-in desktop-pill">
+            <button class="pill-segment dim" (click)="scrollToSearch('location')">
+                <span>¿Dónde?</span>
+            </button>
+            <span class="divider"></span>
             <button class="pill-segment" (click)="scrollToSearch('sport')">
                 <span>Cualquier deporte</span>
             </button>
@@ -16,38 +21,61 @@
                 <span>Cualquier fecha</span>
             </button>
             <span class="divider"></span>
-            <button class="pill-segment dim" (click)="scrollToSearch('location')">
-                <span>¿Dónde?</span>
+            <button class="pill-segment" (click)="scrollToSearch('time')">
+                <span>Cualquier hora</span>
             </button>
             <button class="search-btn" (click)="scrollToSearch('sport')">
                 <mat-icon>search</mat-icon>
             </button>
         </div>
 
+        <!-- Mobile Pill -->
+        <div class="search-pill mobile-pill animate-fade-in" (click)="scrollToSearch('sport')">
+            <span class="mobile-placeholder">¿A dónde querés ir a jugar?</span>
+            <button class="search-btn">
+                <mat-icon>search</mat-icon>
+            </button>
+        </div>
+        }
+
         <!-- Center: Section Nav (landing) -->
-        <nav class="landing-nav" *ngIf="isLandingPage">
+        @if (isLandingPage) {
+        <nav class="landing-nav">
             <button class="nav-link" (click)="scrollToSection('features-section')">Funcionalidades</button>
             <button class="nav-link" (click)="scrollToSection('how-section')">Proceso</button>
             <button class="nav-link" (click)="scrollToSection('proof-section')">Beneficios</button>
             <button class="nav-link" (click)="scrollToSection('contact-section')">Contacto</button>
         </nav>
+        }
 
         <!-- Right: Actions -->
         <div class="header-actions">
-            <button class="text-btn" *ngIf="!isLandingPage" (click)="goToLandingComplejos()">Gestión para
+            @if (!isLandingPage) {
+            <button class="text-btn host-btn" (click)="goToLandingComplejos()">Gestión para
                 complejos</button>
-            <button class="text-btn cta-reserve" *ngIf="isLandingPage" (click)="goHome()">
+            }
+            @if (isLandingPage) {
+            <button class="text-btn cta-reserve" (click)="goHome()">
                 Reservá una cancha
             </button>
+            }
 
             <!-- User Menu -->
             <div class="user-menu-wrapper">
                 <button class="login-btn" (click)="toggleDropdown($event)">
                     <mat-icon>menu</mat-icon>
+                    @if (!isAuthenticated) {
                     <mat-icon>account_circle</mat-icon>
+                    }
+                    @if (isAuthenticated) {
+                    <div class="user-avatar">
+                        {{ currentUser?.name?.charAt(0) || 'U' }}
+                    </div>
+                    }
                 </button>
 
-                <div class="user-dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+                @if (showDropdown) {
+                <div class="user-dropdown" (click)="$event.stopPropagation()">
                     <div class="dropdown-section">
                         <button class="dropdown-item" (click)="goToLandingComplejos()">
                             <mat-icon>business</mat-icon>
@@ -69,6 +97,7 @@
                         </button>
                     </div>
                     <div class="dropdown-divider"></div>
+                    @if (!isAuthenticated) {
                     <div class="dropdown-section">
                         <button class="dropdown-item bold" (click)="goToLogin()">
                             <mat-icon>login</mat-icon>
@@ -79,7 +108,21 @@
                             <span>Registrarse</span>
                         </button>
                     </div>
+                    }
+                    @if (isAuthenticated) {
+                    <div class="dropdown-section">
+                        <div class="dropdown-header">
+                            <span class="user-name">{{ currentUser?.name }}</span>
+                            <span class="user-email">{{ currentUser?.email }}</span>
+                        </div>
+                        <button class="dropdown-item" (click)="logout()">
+                            <mat-icon>logout</mat-icon>
+                            <span>Cerrar sesión</span>
+                        </button>
+                    </div>
+                    }
                 </div>
+                }
             </div>
         </div>
     </div>

@@ -1,14 +1,19 @@
+// ─── Import Fonts ───────────────────────────────
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 // ─── Variables ────────────────────────────────
-$green-primary: #2e7d32;
-$green-dark: #1b5e20;
-$border-color: #ddd;
-$text-primary: #222;
+$green-primary: #10b981; // emerald-500
+$green-dark: #059669; // emerald-600
+$border-color: #ebebeb;
+$text-primary: #222222;
 $text-secondary: #717171;
 
 :host {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: $text-primary;
 }
 
 // ─── Header ───────────────────────────────────
@@ -46,11 +51,20 @@ $text-secondary: #717171;
 
 // Search Pill
 .search-pill {
+    &.mobile-pill {
+        display: none;
+    }
+
+    &.desktop-pill {
+        display: flex;
+    }
+
     display: flex;
     align-items: center;
     border: 1px solid $border-color;
     border-radius: 40px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     height: 48px;
     transition: box-shadow 0.2s;
@@ -136,6 +150,17 @@ $text-secondary: #717171;
             background: #f7f7f7;
         }
 
+        &.host-btn {
+            border: 1px solid $border-color;
+            padding: 8px 16px;
+            transition: all 0.2s;
+
+            &:hover {
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+                border-color: #ddd;
+            }
+        }
+
         &.cta-reserve {
             display: flex;
             align-items: center;
@@ -190,6 +215,20 @@ $text-secondary: #717171;
             color: $text-secondary;
         }
 
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: $text-primary;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
         &:hover {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
         }
@@ -213,6 +252,24 @@ $text-secondary: #717171;
 
     .dropdown-section {
         padding: 4px 0;
+
+        .dropdown-header {
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .user-name {
+                font-weight: 600;
+                font-size: 14px;
+                color: $text-primary;
+            }
+
+            .user-email {
+                font-size: 13px;
+                color: $text-secondary;
+            }
+        }
     }
 
     .dropdown-divider {
@@ -405,8 +462,39 @@ $text-secondary: #717171;
 
 // ─── Responsive ───────────────────────────────
 @media (max-width: 900px) {
-    .search-pill {
-        display: none;
+    .logo {
+        .logo-img {
+            height: 40px;
+        }
+    }
+
+    .search-pill.desktop-pill {
+        display: none !important;
+    }
+
+    .search-pill.mobile-pill {
+        display: flex !important;
+        flex: 1;
+        margin: 0 8px;
+        background: #fdfdfd;
+        cursor: pointer;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 20px;
+        padding-right: 0;
+
+        .mobile-placeholder {
+            font-size: 14px;
+            color: $text-primary;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-btn {
+            margin-right: 6px;
+        }
     }
 
     .landing-nav {

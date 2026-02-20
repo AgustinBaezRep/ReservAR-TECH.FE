@@ -1,27 +1,74 @@
-<div class="card" (click)="navigateToDetail()" style="cursor: pointer;">
-    <div class="image-container">
-        <img [src]="complex.imageUrl" [alt]="complex.name">
-        <div class="price-badge">
-            <span class="label">desde</span>
-            <span class="price">{{ complex.minPrice | currency:'USD':'symbol':'1.0-0' }}</span>
+<div class="card" (click)="navigateToDetail()" (mouseleave)="resetImage()">
+    <div class="image-carousel">
+        <!-- Imágenes del carrusel -->
+        <div class="carousel-inner" [style.transform]="'translateX(' + (-currentImageIndex * 100) + '%)'">
+            @for (img of images; track img) {
+            <img [src]="img" [alt]="complex.name" class="carousel-img">
+            }
         </div>
-    </div>
 
-    <div class="content">
-        <div class="header">
-            <div class="info">
+        <!-- Botones ant/sig -->
+        @if (images.length > 1) {
+        <button class="nav-btn prev-btn" (click)="prevImage($event)">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button class="nav-btn next-btn" (click)="nextImage($event)">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+        }
+
+        <!-- Puntos del carrusel -->
+        @if (images.length > 1) {
+        <div class="carousel-dots">
+            @for (img of images; track img; let i = $index) {
+            <span class="dot" [class.active]="i === currentImageIndex" (click)="goToImage(i, $event)"></span>
+            }
+        </div>
+        }
+
+        <!-- Badges -->
+        <div class="badges-container">
+            <!-- Mostrar escasez asumiendo length entre 1 y 3 como poco disponible -->
+            @if (complex.availableSlots.length > 0 && complex.availableSlots.length <= 3) { <div class="scarcity-badge">
+                Quedan {{ complex.availableSlots.length }} turnos
+        </div>
+        } @else {
+        <div></div>
+        }
+
+        <button class="favorite-btn" (click)="$event.stopPropagation()">
+            <mat-icon>favorite_border</mat-icon>
+        </button>
+    </div>
+</div>
+
+<div class="content">
+    <div class="header">
+        <div class="info">
+            <div class="title-row">
                 <h3>{{ complex.name }}</h3>
-                <p class="location">{{ complex.location }}</p>
+                @if (complex.rating) {
+                <div class="rating">
+                    <mat-icon>star</mat-icon> <span>{{ complex.rating }}</span>
+                </div>
+                }
             </div>
-            @if (complex.logoUrl) {
-            <img [src]="complex.logoUrl" class="logo" alt="logo">
-            }
-        </div>
-
-        <div class="slots">
-            @for (slot of complex.availableSlots; track slot) {
-            <button class="slot-chip" (click)="$event.stopPropagation()">{{ slot }}</button>
-            }
+            <p class="location">{{ complex.location }}</p>
         </div>
     </div>
+
+    <div class="price-row">
+        <span class="price-val">{{ complex.minPrice | currency:'USD':'symbol':'1.0-0' }}</span>
+        <span class="price-label">por hora</span>
+    </div>
+
+    <div class="slots">
+        @for (slot of complex.availableSlots; track slot) {
+        <button class="slot-chip" (click)="navigateToDetail(slot, $event)">{{ slot }}</button>
+        }
+        @if (complex.availableSlots.length === 0) {
+        <span class="no-slots">Sin lugares hoy</span>
+        }
+    </div>
+</div>
 </div>

@@ -27,9 +27,33 @@ export class MarketplacePageComponent implements OnInit {
 
   onSearch(filters: any) {
     console.log('Filters:', filters);
-    // Simple mock filter logic
+    // Simple mock filter logic based on city and time slots if provided
     this.filteredComplexes = this.complexes.filter(c => {
-      return true;
+      let match = true;
+      if (filters.city) {
+        // We simulate that the 'city' string matches part of 'location'
+        const filterCity = filters.city.split(',')[0].trim().toLowerCase();
+        if (!c.location.toLowerCase().includes(filterCity)) {
+          match = false;
+        }
+      }
+
+      if (filters.sport && match) {
+        // Check if complex has the requested sport
+        const hasSport = c.sports && c.sports.some(s => s.toLowerCase() === filters.sport.toLowerCase());
+        if (!hasSport) {
+          match = false;
+        }
+      }
+
+      if (filters.time && match) {
+        // Simulate checking if the requested time is within availableSlots
+        if (!c.availableSlots.includes(filters.time)) {
+          match = false;
+        }
+      }
+
+      return match;
     });
   }
 }

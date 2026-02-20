@@ -6,5 +6,6 @@ export interface ComplexSearchResult {
     imageUrl: string;
     logoUrl?: string;
     rating?: number;
+    sports: string[];
     availableSlots: string[];
 }
