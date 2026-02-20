@@ -8,6 +8,9 @@ import { CajaService } from '../../caja/services/caja.service';
 import { CreateReservationRequest } from '../models/reservation-request.model';
 import { ReservationResponse } from '../models/reservation-response.model';
 
+// ID del usuario seed para testing
+const SEED_USER_ID = '7B9BDE9E-E2BD-4D81-AF0C-684669A78376'; // Se reemplazará con el ID real del seed
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +29,7 @@ export class ReservationsService {
     return [
       {
         id: '1',
-        courtId: '1',
+        courtId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
         courtName: 'Cancha 1',
         date: today,
         startTime: '10:00',
@@ -41,7 +44,7 @@ export class ReservationsService {
       },
       {
         id: '2',
-        courtId: '2',
+        courtId: 'b2c3d4e5-f6a7-8901-bcde-f12345678901',
         courtName: 'Cancha 2',
         date: today,
         startTime: '14:00',
@@ -56,8 +59,8 @@ export class ReservationsService {
       },
       {
         id: '3',
-        courtId: '3',
-        courtName: 'Cancha 3',
+        courtId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+        courtName: 'Cancha 1',
         date: today,
         startTime: '18:00',
         endTime: '19:00',
@@ -88,16 +91,16 @@ export class ReservationsService {
   }
 
   createReservation(reservation: Partial<Reservation>): Observable<ReservationResponse> {
+    debugger;
+    const startHour = reservation.startTime ? parseInt(reservation.startTime.split(':')[0], 10) : 0;
+
     const requestBody: CreateReservationRequest = {
-      courtName: reservation.courtName!,
-      date: reservation.date!,
-      startTime: reservation.startTime!,
-      endTime: reservation.endTime!,
-      userName: reservation.userName!,
-      userContact: reservation.userContact!,
-      userEmail: reservation.userEmail,
-      price: reservation.price || 0,
-      status: reservation.status || ReservationStatus.Confirmed
+      idCancha: reservation.courtId!,
+      idUsuario: SEED_USER_ID,
+      dia: reservation.date!,
+      hora: startHour,
+      pago: 'Efectivo',
+      fijo: false
     };
 
     return this.http.post<ReservationResponse>(this.apiUrl, requestBody).pipe(
@@ -105,16 +108,16 @@ export class ReservationsService {
         // Agregar la reserva al estado local con los datos del backend
         const newReservation: Reservation = {
           id: response.id,
-          courtId: reservation.courtId || '',
-          courtName: response.courtName,
-          date: response.date,
-          startTime: response.startTime,
-          endTime: response.endTime,
-          userName: response.userName,
-          userContact: response.userContact,
-          userEmail: response.userEmail,
-          status: response.status as ReservationStatus,
-          price: response.price,
+          courtId: response.idCancha,
+          courtName: response.nombreCancha,
+          date: response.dia,
+          startTime: reservation.startTime || `${response.hora}:00`,
+          endTime: reservation.endTime || `${response.hora + 1}:00`,
+          userName: response.nombreUsuario,
+          userContact: String(response.telefonoUsuario),
+          userEmail: response.emailUsuario,
+          status: ReservationStatus.Confirmed,
+          price: reservation.price || 0,
           createdAt: new Date(response.createdAt),
           updatedAt: new Date(response.createdAt)
         };

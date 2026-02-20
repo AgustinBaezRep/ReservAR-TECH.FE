@@ -98,8 +98,8 @@ export class ComplejosService {
         address: 'Av. Siempre Viva 123'
       },
       courts: [
-        { id: '1', name: 'Cancha 1', type: 'Fútbol 5', price: 15000, isActive: true },
-        { id: '2', name: 'Cancha 2', type: 'Padel', price: 20000, isActive: true }
+        { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', name: 'Cancha 1', type: 'Fútbol 5', price: 15000, isActive: true },
+        { id: 'b2c3d4e5-f6a7-8901-bcde-f12345678901', name: 'Cancha 2', type: 'Padel', price: 20000, isActive: true }
       ]
     });
   }
